@@ -6,6 +6,7 @@ import java.security.InvalidKeyException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -95,7 +96,21 @@ public class Signature
         }
         else
         {
-            throw new InvalidKeyException("can't recognise key type in ECDSA based signer");
+            try
+            {
+                if (privateKey instanceof ECPrivateKey)
+                {
+                    param = ECUtil.generatePrivateKeyParameter(privateKey);
+                }
+                else
+                {
+                    throw new InvalidKeyException("can't recognise key type in ECDSA based signer");
+                }
+            }
+            catch (Exception e)
+            {
+                throw new InvalidKeyException("can't recognise key type in ECDSA based signer", e);
+            }
         }
 
         digest.reset();
