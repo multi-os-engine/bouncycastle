@@ -155,7 +155,15 @@ public class ECUtil
                             k.getD(),
                             new ECDomainParameters(s.getCurve(), s.getG(), s.getN(), s.getH(), s.getSeed()));
         }
-                        
+        else if (key instanceof java.security.interfaces.ECPrivateKey)
+        {
+            java.security.interfaces.ECPrivateKey privKey = (java.security.interfaces.ECPrivateKey)key;
+            ECParameterSpec s = EC5Util.convertSpec(privKey.getParams(), false);
+            return new ECPrivateKeyParameters(
+                            privKey.getS(),
+                            new ECDomainParameters(s.getCurve(), s.getG(), s.getN(), s.getH(), s.getSeed()));
+        }
+
         throw new InvalidKeyException("can't identify EC private key.");
     }
 
