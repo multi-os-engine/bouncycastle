@@ -9655,7 +9655,7 @@ diff -Naur bcprov-jdk15on-147.orig/org/bouncycastle/jce/provider/X509Certificate
          }
          catch (IOException e)
          {
-@@ -815,4 +829,10 @@
+@@ -815,4 +829,14 @@
          
          return id1.getParameters().equals(id2.getParameters());
      }
@@ -9663,6 +9663,10 @@ diff -Naur bcprov-jdk15on-147.orig/org/bouncycastle/jce/provider/X509Certificate
 +    public Collection<List<?>> getSubjectAlternativeNames() throws CertificateParsingException
 +    {
 +        return X509ExtensionUtil.getSubjectAlternativeNames(this);
++    }
++    public Collection<List<?>> getIssuerAlternativeNames() throws CertificateParsingException
++    {
++        return X509ExtensionUtil.getIssuerAlternativeNames(this);
 +    }
 +    // END android-added
  }
@@ -10013,7 +10017,7 @@ diff -Naur bcprov-jdk15on-147.orig/org/bouncycastle/x509/extension/X509Extension
                      break;
                  case GeneralName.dNSName:
                  case GeneralName.rfc822Name:
-@@ -82,7 +98,16 @@
+@@ -82,14 +98,28 @@
                      list.add(ASN1ObjectIdentifier.getInstance(genName.getName()).getId());
                      break;
                  case GeneralName.iPAddress:
@@ -10031,9 +10035,10 @@ diff -Naur bcprov-jdk15on-147.orig/org/bouncycastle/x509/extension/X509Extension
                      break;
                  default:
                      throw new IOException("Bad tag number: " + genName.getTagNo());
-@@ -90,6 +115,11 @@
+                 }
  
-                 temp.add(list);
+-                temp.add(list);
++                temp.add(Collections.unmodifiableList(list));
              }
 +            // BEGIN android-added
 +            if (temp.size() == 0) {
