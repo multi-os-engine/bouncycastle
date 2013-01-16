@@ -113,7 +113,7 @@ public class X509ExtensionUtil
                     throw new IOException("Bad tag number: " + genName.getTagNo());
                 }
 
-                temp.add(list);
+                temp.add(Collections.unmodifiableList(list));
             }
             // BEGIN android-added
             if (temp.size() == 0) {
