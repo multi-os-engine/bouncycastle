@@ -38,9 +38,6 @@ import org.bouncycastle.crypto.DataLengthException;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.engines.AESFastEngine;
 import org.bouncycastle.crypto.engines.DESEngine;
-// BEGIN android-removed
-// import org.bouncycastle.crypto.engines.GOST28147Engine;
-// END android-removed
 import org.bouncycastle.crypto.engines.RC2Engine;
 import org.bouncycastle.crypto.engines.TwofishEngine;
 import org.bouncycastle.crypto.modes.AEADBlockCipher;
@@ -892,77 +889,6 @@ public class JCEBlockCipher
     /*
      * The ciphers that inherit from us.
      */
-
-    /**
-     * DES
-     */
-    static public class DES
-        extends JCEBlockCipher
-    {
-        public DES()
-        {
-            super(new DESEngine());
-        }
-    }
-
-    // BEGIN android-removed
-    // /**
-    //  * DESCBC
-    //  */
-    // static public class DESCBC
-    //     extends JCEBlockCipher
-    // {
-    //     public DESCBC()
-    //     {
-    //         super(new CBCBlockCipher(new DESEngine()), 64);
-    //     }
-    // }
-    //
-    // /**
-    //  *  GOST28147
-    //  */
-    // static public class GOST28147
-    //     extends JCEBlockCipher
-    // {
-    //     public GOST28147()
-    //     {
-    //         super(new GOST28147Engine());
-    //     }
-    // }
-    //
-    // static public class GOST28147cbc
-    //     extends JCEBlockCipher
-    // {
-    //     public GOST28147cbc()
-    //     {
-    //         super(new CBCBlockCipher(new GOST28147Engine()), 64);
-    //     }
-    // }
-    //
-    // /**
-    //  * RC2
-    //  */
-    // static public class RC2
-    //     extends JCEBlockCipher
-    // {
-    //     public RC2()
-    //     {
-    //         super(new RC2Engine());
-    //     }
-    // }
-    //
-    // /**
-    //  * RC2CBC
-    //  */
-    // static public class RC2CBC
-    //     extends JCEBlockCipher
-    // {
-    //     public RC2CBC()
-    //     {
-    //         super(new CBCBlockCipher(new RC2Engine()), 64);
-    //     }
-    // }
-    // END android-removed
 
     /**
      * PBEWithMD5AndDES

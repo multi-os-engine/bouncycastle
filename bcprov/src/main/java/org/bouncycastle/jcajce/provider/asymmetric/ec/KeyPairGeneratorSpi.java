@@ -252,15 +252,7 @@ public abstract class KeyPairGeneratorSpi
         {
             if (!initialised)
             {
-                // BEGIN android-removed
-                // throw new IllegalStateException("EC Key Pair Generator not initialised");
-                // END android-removed
-                // BEGIN android-added
-                /*
-                 * KeyPairGenerator documentation says that a default initialization must be provided
-                 */
-                initialize(192, random);
-                // END android-added
+                initialize(strength, new SecureRandom());
             }
 
             AsymmetricCipherKeyPair     pair = engine.generateKeyPair();
