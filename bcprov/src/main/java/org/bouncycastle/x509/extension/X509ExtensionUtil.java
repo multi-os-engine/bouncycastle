@@ -25,6 +25,7 @@ import org.bouncycastle.asn1.x509.X509Extension;
 // BEGIN android-added
 import org.bouncycastle.asn1.x509.X509Name;
 // END android-added
+import org.bouncycastle.util.Integers;
 
 
 public class X509ExtensionUtil
@@ -72,7 +73,7 @@ public class X509ExtensionUtil
                 GeneralName genName = GeneralName.getInstance(it.nextElement());
                 List list = new ArrayList();
                 // BEGIN android-changed
-                list.add(Integer.valueOf(genName.getTagNo()));
+                list.add(Integers.valueOf(genName.getTagNo()));
                 // END android-changed
                 switch (genName.getTagNo())
                 {
