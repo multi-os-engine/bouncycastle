@@ -34,6 +34,7 @@ import org.bouncycastle.crypto.signers.ECDSASigner;
 // END android-removed
 import org.bouncycastle.jcajce.provider.asymmetric.util.DSABase;
 import org.bouncycastle.jcajce.provider.asymmetric.util.DSAEncoder;
+import org.bouncycastle.jcajce.provider.asymmetric.util.ECUtil;
 
 public class SignatureSpi
     extends DSABase
@@ -213,6 +214,24 @@ public class SignatureSpi
     //     public ecCVCDSA256()
     //     {
     //         super(new SHA256Digest(), new ECDSASigner(), new CVCDSAEncoder());
+    //     }
+    // }
+    //
+    // static public class ecCVCDSA384
+    //     extends SignatureSpi
+    // {
+    //     public ecCVCDSA384()
+    //     {
+    //         super(new SHA384Digest(), new ECDSASigner(), new CVCDSAEncoder());
+    //     }
+    // }
+    //
+    // static public class ecCVCDSA512
+    //     extends SignatureSpi
+    // {
+    //     public ecCVCDSA512()
+    //     {
+    //         super(new SHA512Digest(), new ECDSASigner(), new CVCDSAEncoder());
     //     }
     // }
     // END android-removed

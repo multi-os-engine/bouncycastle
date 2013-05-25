@@ -157,6 +157,10 @@ public class DERObjectIdentifier
     public DERObjectIdentifier(
         String  identifier)
     {
+        if (identifier == null)
+        {
+            throw new IllegalArgumentException("'identifier' cannot be null");
+        }
         if (!isValidIdentifier(identifier))
         {
             throw new IllegalArgumentException("string " + identifier + " not an OID");
@@ -169,6 +173,16 @@ public class DERObjectIdentifier
          */
         this.identifier = identifier.intern();
         // END android-changed
+    }
+
+    DERObjectIdentifier(DERObjectIdentifier oid, String branchID)
+    {
+        if (!isValidBranchID(branchID, 0))
+        {
+            throw new IllegalArgumentException("string " + branchID + " not a valid OID branch");
+        }
+
+        this.identifier = oid.getId() + "." + branchID;
     }
 
     public String getId()
@@ -302,25 +316,15 @@ public class DERObjectIdentifier
         return getId();
     }
 
-    private static boolean isValidIdentifier(
-        String identifier)
+    private static boolean isValidBranchID(
+        String branchID, int start)
     {
-        if (identifier.length() < 3
-            || identifier.charAt(1) != '.')
-        {
-            return false;
-        }
-
-        char first = identifier.charAt(0);
-        if (first < '0' || first > '2')
-        {
-            return false;
-        }
-
         boolean periodAllowed = false;
-        for (int i = identifier.length() - 1; i >= 2; i--)
+
+        int pos = branchID.length();
+        while (--pos >= start)
         {
-            char ch = identifier.charAt(i);
+            char ch = branchID.charAt(pos);
 
             // TODO Leading zeroes?
             if ('0' <= ch && ch <= '9')
@@ -344,6 +348,23 @@ public class DERObjectIdentifier
         }
 
         return periodAllowed;
+    }
+
+    private static boolean isValidIdentifier(
+        String identifier)
+    {
+        if (identifier.length() < 3 || identifier.charAt(1) != '.')
+        {
+            return false;
+        }
+
+        char first = identifier.charAt(0);
+        if (first < '0' || first > '2')
+        {
+            return false;
+        }
+
+        return isValidBranchID(identifier, 2);
     }
 
     private static ASN1ObjectIdentifier[][] cache = new ASN1ObjectIdentifier[256][];
