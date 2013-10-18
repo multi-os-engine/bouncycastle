@@ -29,6 +29,9 @@ ri_bcprov_src_files := $(filter-out \
  bcprov/src/main/java/org/bouncycastle/crypto/digests/OpenSSLDigest.java, \
  $(all_bcprov_src_files))
 
+# We don't need these for the PDK build
+ifneq ($(TARGET_BUILD_PDK),true)
+
 include $(CLEAR_VARS)
 LOCAL_MODULE := bouncycastle
 LOCAL_MODULE_TAGS := optional
@@ -50,6 +53,8 @@ LOCAL_JAVA_LIBRARIES := conscrypt core
 LOCAL_NO_STANDARD_LIBRARIES := true
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 include $(BUILD_STATIC_JAVA_LIBRARY)
+
+endif # TARGET_BUILD_PDK != true
 
 # This is used to generate a list of what is unused so it can be removed when bouncycastle is updated.
 # Based on "Finding dead code" example in ProGuard manual at http://proguard.sourceforge.net/
