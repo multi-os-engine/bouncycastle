@@ -98,7 +98,9 @@ bouncycastle-proguard-deadcode: $(full_classes_compiled_jar) $(full_java_libs)
 		    public java.lang.String getPaddingName(); \
 		}"
 
-ifeq ($(WITH_HOST_DALVIK),true)
+# Conscrypt isn't built in the PDK, so this cannot be built because it has a
+# dependency on conscrypt-hostdex.
+ifeq ($(WITH_HOST_DALVIK)-$(TARGET_BUILD_PDK),true-false)
     include $(CLEAR_VARS)
     LOCAL_MODULE := bouncycastle-hostdex
     LOCAL_MODULE_TAGS := optional
