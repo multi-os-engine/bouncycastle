@@ -1,0 +1,7 @@
+Code-Review+2: Kenny Root <kroot@android.com>
+Verified+1: Geremy Condra <gcondra@google.com>
+Submitted-by: Geremy Condra <gcondra@google.com>
+Submitted-at: Tue, 10 Dec 2013 23:17:30 +0000
+Reviewed-on: https://android-review.googlesource.com/71941
+Project: platform/external/bouncycastle
+Branch: refs/heads/master
