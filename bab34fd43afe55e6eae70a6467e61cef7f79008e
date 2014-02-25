@@ -1,0 +1,7 @@
+Code-Review+2: Brian Carlstrom <bdc@google.com>
+Verified+1: Kenny Root <kroot@android.com>
+Submitted-by: Kenny Root <kroot@android.com>
+Submitted-at: Tue, 25 Feb 2014 23:52:00 +0000
+Reviewed-on: https://android-review.googlesource.com/83487
+Project: platform/external/bouncycastle
+Branch: refs/heads/master
