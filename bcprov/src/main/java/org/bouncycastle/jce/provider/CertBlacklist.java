@@ -34,12 +34,6 @@ import org.bouncycastle.crypto.digests.AndroidDigestFactory;
 import org.bouncycastle.util.encoders.Hex;
 
 public class CertBlacklist {
-
-    private static final String ANDROID_DATA = System.getenv("ANDROID_DATA");
-    private static final String BLACKLIST_ROOT = ANDROID_DATA + "/misc/keychain/";
-    public static final String DEFAULT_PUBKEY_BLACKLIST_PATH = BLACKLIST_ROOT + "pubkey_blacklist.txt";
-    public static final String DEFAULT_SERIAL_BLACKLIST_PATH = BLACKLIST_ROOT + "serial_blacklist.txt";
-
     private static final Logger logger = Logger.getLogger(CertBlacklist.class.getName());
 
     // public for testing
@@ -47,7 +41,13 @@ public class CertBlacklist {
     public final Set<byte[]> pubkeyBlacklist;
 
     public CertBlacklist() {
-        this(DEFAULT_PUBKEY_BLACKLIST_PATH, DEFAULT_SERIAL_BLACKLIST_PATH);
+        String androidData = System.getenv("ANDROID_DATA");
+        String blacklistRoot = androidData + "/misc/keychain/";
+        String defaultPubkeyBlacklistPath = blacklistRoot + "pubkey_blacklist.txt";
+        String defaultSerialBlacklistPath = blacklistRoot + "serial_blacklist.txt";
+
+        serialBlacklist = readSerialBlackList(defaultPubkeyBlacklistPath);
+        pubkeyBlacklist = readPublicKeyBlackList(defaultSerialBlacklistPath);
     }
 
     /** Test only interface, not for public use */
