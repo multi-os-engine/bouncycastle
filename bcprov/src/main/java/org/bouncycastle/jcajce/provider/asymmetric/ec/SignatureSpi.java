@@ -249,7 +249,7 @@ public class SignatureSpi
     // {
     //     public ecCVCDSA()
     //     {
-    //         super(new SHA1Digest(), new ECDSASigner(), new CVCDSAEncoder());
+    //         super(new SHA1Digest(), new ECDSASigner(), new PlainDSAEncoder());
     //     }
     // }
     //
@@ -258,7 +258,7 @@ public class SignatureSpi
     // {
     //     public ecCVCDSA224()
     //     {
-    //         super(new SHA224Digest(), new ECDSASigner(), new CVCDSAEncoder());
+    //         super(new SHA224Digest(), new ECDSASigner(), new PlainDSAEncoder());
     //     }
     // }
     //
@@ -267,7 +267,7 @@ public class SignatureSpi
     // {
     //     public ecCVCDSA256()
     //     {
-    //         super(new SHA256Digest(), new ECDSASigner(), new CVCDSAEncoder());
+    //         super(new SHA256Digest(), new ECDSASigner(), new PlainDSAEncoder());
     //     }
     // }
     //
@@ -276,7 +276,7 @@ public class SignatureSpi
     // {
     //     public ecCVCDSA384()
     //     {
-    //         super(new SHA384Digest(), new ECDSASigner(), new CVCDSAEncoder());
+    //         super(new SHA384Digest(), new ECDSASigner(), new PlainDSAEncoder());
     //     }
     // }
     //
@@ -285,7 +285,16 @@ public class SignatureSpi
     // {
     //     public ecCVCDSA512()
     //     {
-    //         super(new SHA512Digest(), new ECDSASigner(), new CVCDSAEncoder());
+    //         super(new SHA512Digest(), new ECDSASigner(), new PlainDSAEncoder());
+    //     }
+    // }
+    //
+    // static public class ecPlainDSARP160
+    //     extends SignatureSpi
+    // {
+    //     public ecPlainDSARP160()
+    //     {
+    //         super(new RIPEMD160Digest(), new ECDSASigner(), new PlainDSAEncoder());
     //     }
     // }
     // END android-removed
@@ -320,7 +329,7 @@ public class SignatureSpi
         }
     }
 
-    private static class CVCDSAEncoder
+    private static class PlainDSAEncoder
         implements DSAEncoder
     {
         public byte[] encode(
