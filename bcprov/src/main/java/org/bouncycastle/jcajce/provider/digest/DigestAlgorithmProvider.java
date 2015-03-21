@@ -16,6 +16,9 @@ abstract class DigestAlgorithmProvider
         String mainName = "HMAC" + algorithm;
 
         provider.addAlgorithm("Mac." + mainName, algorithmClassName);
+        // BEGIN android-added
+        provider.addAlgorithm("Mac." + mainName + " SupportedKeyFormats", "RAW");
+        // END android-added
         provider.addAlgorithm("Alg.Alias.Mac.HMAC-" + algorithm, mainName);
         provider.addAlgorithm("Alg.Alias.Mac.HMAC/" + algorithm, mainName);
         provider.addAlgorithm("KeyGenerator." + mainName, keyGeneratorClassName);

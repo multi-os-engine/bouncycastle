@@ -48,6 +48,10 @@ public class RSA
             // END android-removed
 
             provider.addAlgorithm("Cipher.RSA", PREFIX + "CipherSpi$NoPadding");
+            // BEGIN android-added
+            provider.addAlgorithm("Cipher.RSA SupportedKeyClasses",
+                    "java.security.interfaces.RSAPrivateKey|java.security.interfaces.RSAPublicKey");
+            // END android-added
             // BEGIN android-changed
             provider.addAlgorithm("Alg.Alias.Cipher.RSA/RAW", "RSA");
             // END android-changed
@@ -200,6 +204,10 @@ public class RSA
             String longJdk11Variation2 = digest + "WithRSAEncryption";
 
             provider.addAlgorithm("Signature." + mainName, className);
+            // BEGIN android-added
+            provider.addAlgorithm("Signature." + mainName + " SupportedKeyClasses",
+                    "java.security.interfaces.RSAPrivateKey|java.security.interfaces.RSAPublicKey");
+            // END android-added
             provider.addAlgorithm("Alg.Alias.Signature." + jdk11Variation1, mainName);
             provider.addAlgorithm("Alg.Alias.Signature." + jdk11Variation2, mainName);
             provider.addAlgorithm("Alg.Alias.Signature." + longName, mainName);
