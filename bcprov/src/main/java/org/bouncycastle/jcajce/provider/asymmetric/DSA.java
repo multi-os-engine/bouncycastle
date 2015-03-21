@@ -10,6 +10,10 @@ import org.bouncycastle.jcajce.provider.util.AsymmetricKeyInfoConverter;
 public class DSA
 {
     private static final String PREFIX = "org.bouncycastle.jcajce.provider.asymmetric" + ".dsa.";
+    // BEGIN android-added
+    private static final String SUPPORTED_KEY_CLASSES =
+            "java.security.interfaces.DSAPrivateKey|java.security.interfaces.DSAPublicKey";
+    // END android-added
 
     public static class Mappings
         extends AsymmetricAlgorithmProvider
@@ -30,7 +34,15 @@ public class DSA
             // BEGIN android-changed
             provider.addAlgorithm("Signature.SHA1withDSA", PREFIX + "DSASigner$stdDSA");
             // END android-changed
+            // BEGIN android-added
+            provider.addAlgorithm("Signature.SHA1withDSA SupportedKeyClasses",
+                    SUPPORTED_KEY_CLASSES);
+            // END android-added
             provider.addAlgorithm("Signature.NONEWITHDSA", PREFIX + "DSASigner$noneDSA");
+            // BEGIN android-added
+            provider.addAlgorithm("Signature.NONEWITHDSA SupportedKeyClasses",
+                    SUPPORTED_KEY_CLASSES);
+            // END android-added
 
             provider.addAlgorithm("Alg.Alias.Signature.RAWDSA", "NONEWITHDSA");
 
@@ -43,8 +55,10 @@ public class DSA
             // provider.addAlgorithm("Signature.SHA512WITHDETDSA", PREFIX + "DSASigner$detDSA512");
             // END android-removed
 
-            addSignatureAlgorithm(provider, "SHA224", "DSA", PREFIX + "DSASigner$dsa224", NISTObjectIdentifiers.dsa_with_sha224);
-            addSignatureAlgorithm(provider, "SHA256", "DSA", PREFIX + "DSASigner$dsa256", NISTObjectIdentifiers.dsa_with_sha256);
+            // BEGIN android-changed
+            addSignatureAlgorithm(provider, "SHA224", "DSA", PREFIX + "DSASigner$dsa224", NISTObjectIdentifiers.dsa_with_sha224, null, null);
+            addSignatureAlgorithm(provider, "SHA256", "DSA", PREFIX + "DSASigner$dsa256", NISTObjectIdentifiers.dsa_with_sha256, null, null);
+            // END android-changed
             // BEGIN android-removed
             // addSignatureAlgorithm(provider, "SHA384", "DSA", PREFIX + "DSASigner$dsa384", NISTObjectIdentifiers.dsa_with_sha384);
             // addSignatureAlgorithm(provider, "SHA512", "DSA", PREFIX + "DSASigner$dsa512", NISTObjectIdentifiers.dsa_with_sha512);
