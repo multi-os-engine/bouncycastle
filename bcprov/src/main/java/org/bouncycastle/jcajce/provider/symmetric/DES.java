@@ -448,7 +448,9 @@ public final class DES
         public void configure(ConfigurableProvider provider)
         {
 
-            provider.addAlgorithm("Cipher.DES", PREFIX + "$ECB");
+            // BEGIN android-changed
+            addCipherImpl(provider, "DES", PREFIX + "$ECB");
+            // END android-changed
             // BEGIN android-removed
             // provider.addAlgorithm("Cipher." + OIWObjectIdentifiers.desCBC, PREFIX + "$CBC");
             //
@@ -495,9 +497,11 @@ public final class DES
             //
             // provider.addAlgorithm("Cipher.PBEWITHMD2ANDDES", PREFIX + "$PBEWithMD2");
             // END android-removed
-            provider.addAlgorithm("Cipher.PBEWITHMD5ANDDES", PREFIX + "$PBEWithMD5");
-            provider.addAlgorithm("Cipher.PBEWITHSHA1ANDDES", PREFIX + "$PBEWithSHA1");
-            
+            // BEGIN android-changed
+            addCipherImpl(provider, "PBEWITHMD5ANDDES", PREFIX + "$PBEWithMD5");
+            addCipherImpl(provider, "PBEWITHSHA1ANDDES", PREFIX + "$PBEWithSHA1");
+            // END android-changed
+
             // BEGIN android-removed
             // provider.addAlgorithm("Alg.Alias.Cipher." + PKCSObjectIdentifiers.pbeWithMD2AndDES_CBC, "PBEWITHMD2ANDDES");
             // END android-removed
@@ -527,5 +531,12 @@ public final class DES
             provider.addAlgorithm("Alg.Alias.KeyGenerator." + oid.getId(), name);
             provider.addAlgorithm("Alg.Alias.KeyFactory." + oid.getId(), name);
         }
+        // BEGIN android-added
+        private void addCipherImpl(ConfigurableProvider provider, String algorithm,
+                String implClass) {
+            provider.addAlgorithm("Cipher." + algorithm, implClass);
+            provider.addAlgorithm("Cipher." + algorithm + " SupportedKeyFormats", "RAW");
+        }
+        // END android-added
     }
 }

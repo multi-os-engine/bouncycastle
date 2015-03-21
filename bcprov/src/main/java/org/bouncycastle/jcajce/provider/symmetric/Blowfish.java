@@ -64,6 +64,9 @@ public final class Blowfish
         {
 
             provider.addAlgorithm("Cipher.BLOWFISH", PREFIX + "$ECB");
+            // BEGIN android-added
+            provider.addAlgorithm("Cipher.BLOWFISH SupportedKeyFormats", "RAW");
+            // END android-added
             // BEGIN android-removed
             // provider.addAlgorithm("Cipher.1.3.6.1.4.1.3029.1.2", PREFIX + "$CBC");
             // END android-removed

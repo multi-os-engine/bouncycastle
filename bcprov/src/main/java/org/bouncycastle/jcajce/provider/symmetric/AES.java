@@ -35,6 +35,7 @@ import org.bouncycastle.crypto.modes.CFBBlockCipher;
 import org.bouncycastle.crypto.modes.GCMBlockCipher;
 import org.bouncycastle.crypto.modes.OFBBlockCipher;
 import org.bouncycastle.jcajce.provider.config.ConfigurableProvider;
+import org.bouncycastle.jcajce.provider.symmetric.util.BCPBEKey;
 // BEGIN android-removed
 // import org.bouncycastle.jcajce.provider.symmetric.util.BaseAlgorithmParameterGenerator;
 // END android-removed
@@ -523,7 +524,9 @@ public final class AES
             // provider.addAlgorithm("Alg.Alias.AlgorithmParameterGenerator." + NISTObjectIdentifiers.id_aes256_CBC, "AES");
             // END android-removed
 
-            provider.addAlgorithm("Cipher.AES", PREFIX + "$ECB");
+            // BEGIN android-changed
+            addCipherImpl(provider, "AES", PREFIX + "$ECB");
+            // END android-changed
             provider.addAlgorithm("Alg.Alias.Cipher." + wrongAES128, "AES");
             provider.addAlgorithm("Alg.Alias.Cipher." + wrongAES192, "AES");
             provider.addAlgorithm("Alg.Alias.Cipher." + wrongAES256, "AES");
@@ -541,7 +544,9 @@ public final class AES
             // provider.addAlgorithm("Cipher." + NISTObjectIdentifiers.id_aes192_CFB, PREFIX + "$CFB");
             // provider.addAlgorithm("Cipher." + NISTObjectIdentifiers.id_aes256_CFB, PREFIX + "$CFB");
             // END android-removed
-            provider.addAlgorithm("Cipher.AESWRAP", PREFIX + "$Wrap");
+            // BEGIN android-changed
+            addCipherImpl(provider, "AESWRAP", PREFIX + "$Wrap");
+            // END android-changed
             provider.addAlgorithm("Alg.Alias.Cipher." + NISTObjectIdentifiers.id_aes128_wrap, "AESWRAP");
             provider.addAlgorithm("Alg.Alias.Cipher." + NISTObjectIdentifiers.id_aes192_wrap, "AESWRAP");
             provider.addAlgorithm("Alg.Alias.Cipher." + NISTObjectIdentifiers.id_aes256_wrap, "AESWRAP");
@@ -551,7 +556,9 @@ public final class AES
             // provider.addAlgorithm("Cipher.AESRFC5649WRAP", PREFIX + "$RFC5649Wrap");
             // END android-removed
 
-            provider.addAlgorithm("Cipher.GCM", PREFIX + "$GCM");
+            // BEGIN android-changed
+            addCipherImpl(provider, "GCM", PREFIX + "$GCM");
+            // END android-changed
             provider.addAlgorithm("Alg.Alias.Cipher." + NISTObjectIdentifiers.id_aes128_GCM, "GCM");
             provider.addAlgorithm("Alg.Alias.Cipher." + NISTObjectIdentifiers.id_aes192_GCM, "GCM");
             provider.addAlgorithm("Alg.Alias.Cipher." + NISTObjectIdentifiers.id_aes256_GCM, "GCM");
@@ -587,14 +594,16 @@ public final class AES
             provider.addAlgorithm("Alg.Alias.Cipher." + BCObjectIdentifiers.bc_pbe_sha256_pkcs12_aes128_cbc.getId(), "PBEWITHSHA256AND128BITAES-CBC-BC");
             provider.addAlgorithm("Alg.Alias.Cipher." + BCObjectIdentifiers.bc_pbe_sha256_pkcs12_aes192_cbc.getId(), "PBEWITHSHA256AND192BITAES-CBC-BC");
             provider.addAlgorithm("Alg.Alias.Cipher." + BCObjectIdentifiers.bc_pbe_sha256_pkcs12_aes256_cbc.getId(), "PBEWITHSHA256AND256BITAES-CBC-BC");
-    
-            provider.addAlgorithm("Cipher.PBEWITHSHAAND128BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
-            provider.addAlgorithm("Cipher.PBEWITHSHAAND192BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
-            provider.addAlgorithm("Cipher.PBEWITHSHAAND256BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
-            provider.addAlgorithm("Cipher.PBEWITHSHA256AND128BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
-            provider.addAlgorithm("Cipher.PBEWITHSHA256AND192BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
-            provider.addAlgorithm("Cipher.PBEWITHSHA256AND256BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
-            
+
+            // BEGIN android-changed
+            addCipherImpl(provider, "PBEWITHSHAAND128BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
+            addCipherImpl(provider, "PBEWITHSHAAND192BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
+            addCipherImpl(provider, "PBEWITHSHAAND256BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
+            addCipherImpl(provider, "PBEWITHSHA256AND128BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
+            addCipherImpl(provider, "PBEWITHSHA256AND192BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
+            addCipherImpl(provider, "PBEWITHSHA256AND256BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
+            // END android-changed
+
             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA1AND128BITAES-CBC-BC","PBEWITHSHAAND128BITAES-CBC-BC");
             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA1AND192BITAES-CBC-BC","PBEWITHSHAAND192BITAES-CBC-BC");
             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA1AND256BITAES-CBC-BC","PBEWITHSHAAND256BITAES-CBC-BC");
@@ -604,11 +613,13 @@ public final class AES
             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA-256AND128BITAES-CBC-BC","PBEWITHSHA256AND128BITAES-CBC-BC");
             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA-256AND192BITAES-CBC-BC","PBEWITHSHA256AND192BITAES-CBC-BC");
             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA-256AND256BITAES-CBC-BC","PBEWITHSHA256AND256BITAES-CBC-BC");
-            
-            provider.addAlgorithm("Cipher.PBEWITHMD5AND128BITAES-CBC-OPENSSL", PREFIX + "$PBEWithAESCBC");
-            provider.addAlgorithm("Cipher.PBEWITHMD5AND192BITAES-CBC-OPENSSL", PREFIX + "$PBEWithAESCBC");
-            provider.addAlgorithm("Cipher.PBEWITHMD5AND256BITAES-CBC-OPENSSL", PREFIX + "$PBEWithAESCBC");
-            
+
+            // BEGIN android-changed
+            addCipherImpl(provider, "PBEWITHMD5AND128BITAES-CBC-OPENSSL", PREFIX + "$PBEWithAESCBC");
+            addCipherImpl(provider, "PBEWITHMD5AND192BITAES-CBC-OPENSSL", PREFIX + "$PBEWithAESCBC");
+            addCipherImpl(provider, "PBEWITHMD5AND256BITAES-CBC-OPENSSL", PREFIX + "$PBEWithAESCBC");
+            // END android-changed
+
             provider.addAlgorithm("SecretKeyFactory.PBEWITHMD5AND128BITAES-CBC-OPENSSL", PREFIX + "$PBEWithMD5And128BitAESCBCOpenSSL");
             provider.addAlgorithm("SecretKeyFactory.PBEWITHMD5AND192BITAES-CBC-OPENSSL", PREFIX + "$PBEWithMD5And192BitAESCBCOpenSSL");
             provider.addAlgorithm("SecretKeyFactory.PBEWITHMD5AND256BITAES-CBC-OPENSSL", PREFIX + "$PBEWithMD5And256BitAESCBCOpenSSL");
@@ -663,6 +674,13 @@ public final class AES
             // addPoly1305Algorithm(provider, "AES", PREFIX + "$Poly1305", PREFIX + "$Poly1305KeyGen");
             // END android-removed
         }
+        // BEGIN android-added
+        private void addCipherImpl(ConfigurableProvider provider, String algorithm,
+                String implClass) {
+            provider.addAlgorithm("Cipher." + algorithm, implClass);
+            provider.addAlgorithm("Cipher." + algorithm + " SupportedKeyFormats", "RAW");
+        }
+        // END android-added
     }
 
     private static Class lookup(String className)
