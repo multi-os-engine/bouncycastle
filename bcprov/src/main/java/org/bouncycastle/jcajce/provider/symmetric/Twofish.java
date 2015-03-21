@@ -136,7 +136,10 @@ public final class Twofish
 
             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAANDTWOFISH", "PKCS12PBE");
             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAANDTWOFISH-CBC", "PKCS12PBE");
+            // BEGIN android-changed
             provider.addAlgorithm("Cipher.PBEWITHSHAANDTWOFISH-CBC",  PREFIX + "$PBEWithSHA");
+            provider.addAlgorithm("Cipher.PBEWITHSHAANDTWOFISH-CBC SupportedKeyFormats",  "RAW");
+            // END android-changed
             provider.addAlgorithm("SecretKeyFactory.PBEWITHSHAANDTWOFISH-CBC", PREFIX + "$PBEWithSHAKeyFactory");
 
             // BEGIN android-removed

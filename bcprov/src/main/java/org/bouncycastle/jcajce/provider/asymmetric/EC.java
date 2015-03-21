@@ -13,6 +13,20 @@ import org.bouncycastle.jcajce.provider.util.AsymmetricAlgorithmProvider;
 public class EC
 {
     private static final String PREFIX = "org.bouncycastle.jcajce.provider.asymmetric" + ".ec.";
+    // BEGIN android-added
+    private static final String SUPPORTED_PRIVATE_KEY_CLASSES =
+            org.bouncycastle.jce.interfaces.ECPrivateKey.class.getName()
+            + "|java.security.interfaces.ECPrivateKey";
+    private static final String SUPPORTED_PUBLIC_KEY_CLASSES =
+            org.bouncycastle.jce.interfaces.ECPublicKey.class.getName()
+            + "|java.security.interfaces.ECPublicKey";
+    private static final String SUPPORTED_KEY_CLASSES =
+            SUPPORTED_PRIVATE_KEY_CLASSES + "|" + SUPPORTED_PUBLIC_KEY_CLASSES;
+    private static final String SUPPORTED_PRIVATE_KEY_FORMATS = "PKCS#8";
+    private static final String SUPPORTED_PUBLIC_KEY_FORMATS = "X.509";
+    private static final String SUPPORTED_KEY_FORMATS =
+            SUPPORTED_PRIVATE_KEY_FORMATS + "|" + SUPPORTED_PUBLIC_KEY_FORMATS;
+    // END android-added
 
     public static class Mappings
         extends AsymmetricAlgorithmProvider
@@ -24,6 +38,12 @@ public class EC
         public void configure(ConfigurableProvider provider)
         {
             provider.addAlgorithm("KeyAgreement.ECDH", PREFIX + "KeyAgreementSpi$DH");
+            // BEGIN android-added
+            provider.addAlgorithm("KeyAgreement.ECDH SupportedKeyClasses",
+                    SUPPORTED_PRIVATE_KEY_CLASSES);
+            provider.addAlgorithm("KeyAgreement.ECDH SupportedKeyFormats",
+                    SUPPORTED_PRIVATE_KEY_FORMATS);
+            // END android-added
             // BEGIN android-removed
             // provider.addAlgorithm("KeyAgreement.ECDHC", PREFIX + "KeyAgreementSpi$DHC");
             // provider.addAlgorithm("KeyAgreement.ECMQV", PREFIX + "KeyAgreementSpi$MQV");
@@ -75,7 +95,17 @@ public class EC
             // END android-removed
 
             provider.addAlgorithm("Signature.ECDSA", PREFIX + "SignatureSpi$ecDSA");
+            // BEGIN android-added
+            provider.addAlgorithm("Signature.ECDSA SupportedKeyClasses", SUPPORTED_KEY_CLASSES);
+            provider.addAlgorithm("Signature.ECDSA SupportedKeyFormats", SUPPORTED_KEY_FORMATS);
+            // END android-added
             provider.addAlgorithm("Signature.NONEwithECDSA", PREFIX + "SignatureSpi$ecDSAnone");
+            // BEGIN android-added
+            provider.addAlgorithm("Signature.NONEwithECDSA SupportedKeyClasses",
+                    SUPPORTED_KEY_CLASSES);
+            provider.addAlgorithm("Signature.NONEwithECDSA SupportedKeyFormats",
+                    SUPPORTED_KEY_FORMATS);
+            // END android-added
 
             provider.addAlgorithm("Alg.Alias.Signature.SHA1withECDSA", "ECDSA");
             provider.addAlgorithm("Alg.Alias.Signature.ECDSAwithSHA1", "ECDSA");
@@ -95,10 +125,12 @@ public class EC
             // provider.addAlgorithm("Signature.SHA512WITHDETECDSA", PREFIX + "SignatureSpi$ecDetDSA512");
             // END android-removed
 
-            addSignatureAlgorithm(provider, "SHA224", "ECDSA", PREFIX + "SignatureSpi$ecDSA224", X9ObjectIdentifiers.ecdsa_with_SHA224);
-            addSignatureAlgorithm(provider, "SHA256", "ECDSA", PREFIX + "SignatureSpi$ecDSA256", X9ObjectIdentifiers.ecdsa_with_SHA256);
-            addSignatureAlgorithm(provider, "SHA384", "ECDSA", PREFIX + "SignatureSpi$ecDSA384", X9ObjectIdentifiers.ecdsa_with_SHA384);
-            addSignatureAlgorithm(provider, "SHA512", "ECDSA", PREFIX + "SignatureSpi$ecDSA512", X9ObjectIdentifiers.ecdsa_with_SHA512);
+            // BEGIN android-changed
+            addSignatureAlgorithm(provider, "SHA224", "ECDSA", PREFIX + "SignatureSpi$ecDSA224", X9ObjectIdentifiers.ecdsa_with_SHA224, SUPPORTED_KEY_CLASSES, SUPPORTED_KEY_FORMATS);
+            addSignatureAlgorithm(provider, "SHA256", "ECDSA", PREFIX + "SignatureSpi$ecDSA256", X9ObjectIdentifiers.ecdsa_with_SHA256, SUPPORTED_KEY_CLASSES, SUPPORTED_KEY_FORMATS);
+            addSignatureAlgorithm(provider, "SHA384", "ECDSA", PREFIX + "SignatureSpi$ecDSA384", X9ObjectIdentifiers.ecdsa_with_SHA384, SUPPORTED_KEY_CLASSES, SUPPORTED_KEY_FORMATS);
+            addSignatureAlgorithm(provider, "SHA512", "ECDSA", PREFIX + "SignatureSpi$ecDSA512", X9ObjectIdentifiers.ecdsa_with_SHA512, SUPPORTED_KEY_CLASSES, SUPPORTED_KEY_FORMATS);
+            // END android-changed
             // BEGIN android-removed
             // addSignatureAlgorithm(provider, "RIPEMD160", "ECDSA", PREFIX + "SignatureSpi$ecDSARipeMD160",TeleTrusTObjectIdentifiers.ecSignWithRipemd160);
             //

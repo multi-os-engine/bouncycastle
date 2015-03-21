@@ -95,7 +95,9 @@ public final class ARC4
 
         public void configure(ConfigurableProvider provider)
         {
-            provider.addAlgorithm("Cipher.ARC4", PREFIX + "$Base");
+            // BEGIN android-changed
+            addCipherImpl(provider, "ARC4", PREFIX + "$Base");
+            // END android-changed
             provider.addAlgorithm("Alg.Alias.Cipher." + PKCSObjectIdentifiers.rc4, "ARC4");
             provider.addAlgorithm("Alg.Alias.Cipher.ARCFOUR", "ARC4");
             provider.addAlgorithm("Alg.Alias.Cipher.RC4", "ARC4");
@@ -110,8 +112,10 @@ public final class ARC4
             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAAND40BITRC4", "PKCS12PBE");
             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAAND128BITRC4", "PKCS12PBE");
             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAANDRC4", "PKCS12PBE");
-            provider.addAlgorithm("Cipher.PBEWITHSHAAND128BITRC4", PREFIX + "$PBEWithSHAAnd128Bit");
-            provider.addAlgorithm("Cipher.PBEWITHSHAAND40BITRC4", PREFIX + "$PBEWithSHAAnd40Bit");
+            // BEGIN android-changed
+            addCipherImpl(provider, "PBEWITHSHAAND128BITRC4", PREFIX + "$PBEWithSHAAnd128Bit");
+            addCipherImpl(provider, "PBEWITHSHAAND40BITRC4", PREFIX + "$PBEWithSHAAnd40Bit");
+            // END android-changed
 
             provider.addAlgorithm("Alg.Alias.SecretKeyFactory." + PKCSObjectIdentifiers.pbeWithSHAAnd128BitRC4, "PBEWITHSHAAND128BITRC4");
             provider.addAlgorithm("Alg.Alias.SecretKeyFactory." + PKCSObjectIdentifiers.pbeWithSHAAnd40BitRC4, "PBEWITHSHAAND40BITRC4");
@@ -122,5 +126,12 @@ public final class ARC4
             provider.addAlgorithm("Alg.Alias.Cipher." + PKCSObjectIdentifiers.pbeWithSHAAnd128BitRC4, "PBEWITHSHAAND128BITRC4");
             provider.addAlgorithm("Alg.Alias.Cipher." + PKCSObjectIdentifiers.pbeWithSHAAnd40BitRC4, "PBEWITHSHAAND40BITRC4");
         }
+        // BEGIN android-added
+        private void addCipherImpl(ConfigurableProvider provider, String algorithm,
+                String implClass) {
+            provider.addAlgorithm("Cipher." + algorithm, implClass);
+            provider.addAlgorithm("Cipher." + algorithm + " SupportedKeyFormats", "RAW");
+        }
+        // END android-added
     }
 }

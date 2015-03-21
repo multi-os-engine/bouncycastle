@@ -1163,8 +1163,19 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/crypto/util/PublicKeyFactory
          {
 diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/DH.java bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/asymmetric/DH.java
 --- bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/DH.java	2014-07-26 04:17:24.000000000 +0000
-+++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/asymmetric/DH.java	2014-07-28 19:51:54.000000000 +0000
-@@ -35,10 +35,12 @@
++++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/asymmetric/DH.java	2015-03-21 01:28:37.000000000 +0000
+@@ -23,6 +23,10 @@
+             provider.addAlgorithm("Alg.Alias.KeyPairGenerator.DIFFIEHELLMAN", "DH");
+ 
+             provider.addAlgorithm("KeyAgreement.DH", PREFIX + "KeyAgreementSpi");
++            // BEGIN android-added
++            provider.addAlgorithm("KeyAgreement.DH SupportedKeyClasses",
++                    "javax.crypto.interfaces.DHPrivateKey");
++            // END android-added
+             provider.addAlgorithm("Alg.Alias.KeyAgreement.DIFFIEHELLMAN", "DH");
+ 
+             provider.addAlgorithm("KeyFactory.DH", PREFIX + "KeyFactorySpi");
+@@ -35,10 +39,12 @@
  
              provider.addAlgorithm("AlgorithmParameterGenerator.DH", PREFIX + "AlgorithmParameterGeneratorSpi");
              
@@ -1183,8 +1194,20 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/D
              registerOid(provider, X9ObjectIdentifiers.dhpublicnumber, "DH", new KeyFactorySpi());
 diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/DSA.java bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/asymmetric/DSA.java
 --- bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/DSA.java	2014-07-26 04:17:24.000000000 +0000
-+++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/asymmetric/DSA.java	2013-12-16 16:39:58.000000000 +0000
-@@ -27,40 +27,53 @@
++++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/asymmetric/DSA.java	2015-03-21 01:28:37.000000000 +0000
+@@ -10,6 +10,11 @@
+ public class DSA
+ {
+     private static final String PREFIX = "org.bouncycastle.jcajce.provider.asymmetric" + ".dsa.";
++    // BEGIN android-added
++    private static final String SUPPORTED_KEY_CLASSES =
++            "java.security.interfaces.DSAPrivateKey|java.security.interfaces.DSAPublicKey";
++    private static final String SUPPORTED_KEY_FORMATS = "PKCS#8|X.509";
++    // END android-added
+ 
+     public static class Mappings
+         extends AsymmetricAlgorithmProvider
+@@ -27,40 +32,67 @@
              provider.addAlgorithm("KeyPairGenerator.DSA", PREFIX + "KeyPairGeneratorSpi");
              provider.addAlgorithm("KeyFactory.DSA", PREFIX + "KeyFactorySpi");
  
@@ -1192,7 +1215,19 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/D
 +            // BEGIN android-changed
 +            provider.addAlgorithm("Signature.SHA1withDSA", PREFIX + "DSASigner$stdDSA");
 +            // END android-changed
++            // BEGIN android-added
++            provider.addAlgorithm("Signature.SHA1withDSA SupportedKeyClasses",
++                    SUPPORTED_KEY_CLASSES);
++            provider.addAlgorithm("Signature.SHA1withDSA SupportedKeyFormats",
++                    SUPPORTED_KEY_FORMATS);
++            // END android-added
              provider.addAlgorithm("Signature.NONEWITHDSA", PREFIX + "DSASigner$noneDSA");
++            // BEGIN android-added
++            provider.addAlgorithm("Signature.NONEWITHDSA SupportedKeyClasses",
++                    SUPPORTED_KEY_CLASSES);
++            provider.addAlgorithm("Signature.NONEWITHDSA SupportedKeyFormats",
++                    SUPPORTED_KEY_FORMATS);
++            // END android-added
  
              provider.addAlgorithm("Alg.Alias.Signature.RAWDSA", "NONEWITHDSA");
  
@@ -1202,6 +1237,21 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/D
 -            provider.addAlgorithm("Signature.SHA256WITHDETDSA", PREFIX + "DSASigner$detDSA256");
 -            provider.addAlgorithm("Signature.SHA384WITHDETDSA", PREFIX + "DSASigner$detDSA384");
 -            provider.addAlgorithm("Signature.SHA512WITHDETDSA", PREFIX + "DSASigner$detDSA512");
+-
+-            addSignatureAlgorithm(provider, "SHA224", "DSA", PREFIX + "DSASigner$dsa224", NISTObjectIdentifiers.dsa_with_sha224);
+-            addSignatureAlgorithm(provider, "SHA256", "DSA", PREFIX + "DSASigner$dsa256", NISTObjectIdentifiers.dsa_with_sha256);
+-            addSignatureAlgorithm(provider, "SHA384", "DSA", PREFIX + "DSASigner$dsa384", NISTObjectIdentifiers.dsa_with_sha384);
+-            addSignatureAlgorithm(provider, "SHA512", "DSA", PREFIX + "DSASigner$dsa512", NISTObjectIdentifiers.dsa_with_sha512);
+-
+-            provider.addAlgorithm("Alg.Alias.Signature.SHA/DSA", "DSA");
+-            provider.addAlgorithm("Alg.Alias.Signature.SHA1withDSA", "DSA");
+-            provider.addAlgorithm("Alg.Alias.Signature.SHA1WITHDSA", "DSA");
+-            provider.addAlgorithm("Alg.Alias.Signature.1.3.14.3.2.26with1.2.840.10040.4.1", "DSA");
+-            provider.addAlgorithm("Alg.Alias.Signature.1.3.14.3.2.26with1.2.840.10040.4.3", "DSA");
+-            provider.addAlgorithm("Alg.Alias.Signature.DSAwithSHA1", "DSA");
+-            provider.addAlgorithm("Alg.Alias.Signature.DSAWITHSHA1", "DSA");
+-            provider.addAlgorithm("Alg.Alias.Signature.SHA1WithDSA", "DSA");
+-            provider.addAlgorithm("Alg.Alias.Signature.DSAWithSHA1", "DSA");
 +            // BEGIN android-removed
 +            // provider.addAlgorithm("Signature.DETDSA", PREFIX + "DSASigner$detDSA");
 +            // provider.addAlgorithm("Signature.SHA1WITHDETDSA", PREFIX + "DSASigner$detDSA");
@@ -1210,11 +1260,11 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/D
 +            // provider.addAlgorithm("Signature.SHA384WITHDETDSA", PREFIX + "DSASigner$detDSA384");
 +            // provider.addAlgorithm("Signature.SHA512WITHDETDSA", PREFIX + "DSASigner$detDSA512");
 +            // END android-removed
- 
-             addSignatureAlgorithm(provider, "SHA224", "DSA", PREFIX + "DSASigner$dsa224", NISTObjectIdentifiers.dsa_with_sha224);
-             addSignatureAlgorithm(provider, "SHA256", "DSA", PREFIX + "DSASigner$dsa256", NISTObjectIdentifiers.dsa_with_sha256);
--            addSignatureAlgorithm(provider, "SHA384", "DSA", PREFIX + "DSASigner$dsa384", NISTObjectIdentifiers.dsa_with_sha384);
--            addSignatureAlgorithm(provider, "SHA512", "DSA", PREFIX + "DSASigner$dsa512", NISTObjectIdentifiers.dsa_with_sha512);
++
++            // BEGIN android-changed
++            addSignatureAlgorithm(provider, "SHA224", "DSA", PREFIX + "DSASigner$dsa224", NISTObjectIdentifiers.dsa_with_sha224, SUPPORTED_KEY_CLASSES, SUPPORTED_KEY_FORMATS);
++            addSignatureAlgorithm(provider, "SHA256", "DSA", PREFIX + "DSASigner$dsa256", NISTObjectIdentifiers.dsa_with_sha256, SUPPORTED_KEY_CLASSES, SUPPORTED_KEY_FORMATS);
++            // END android-changed
 +            // BEGIN android-removed
 +            // addSignatureAlgorithm(provider, "SHA384", "DSA", PREFIX + "DSASigner$dsa384", NISTObjectIdentifiers.dsa_with_sha384);
 +            // addSignatureAlgorithm(provider, "SHA512", "DSA", PREFIX + "DSASigner$dsa512", NISTObjectIdentifiers.dsa_with_sha512);
@@ -1234,16 +1284,6 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/D
 +            provider.addAlgorithm("Alg.Alias.Signature.SHA1WithDSA", "SHA1withDSA");
 +            provider.addAlgorithm("Alg.Alias.Signature.DSAWithSHA1", "SHA1withDSA");
  
--            provider.addAlgorithm("Alg.Alias.Signature.SHA/DSA", "DSA");
--            provider.addAlgorithm("Alg.Alias.Signature.SHA1withDSA", "DSA");
--            provider.addAlgorithm("Alg.Alias.Signature.SHA1WITHDSA", "DSA");
--            provider.addAlgorithm("Alg.Alias.Signature.1.3.14.3.2.26with1.2.840.10040.4.1", "DSA");
--            provider.addAlgorithm("Alg.Alias.Signature.1.3.14.3.2.26with1.2.840.10040.4.3", "DSA");
--            provider.addAlgorithm("Alg.Alias.Signature.DSAwithSHA1", "DSA");
--            provider.addAlgorithm("Alg.Alias.Signature.DSAWITHSHA1", "DSA");
--            provider.addAlgorithm("Alg.Alias.Signature.SHA1WithDSA", "DSA");
--            provider.addAlgorithm("Alg.Alias.Signature.DSAWithSHA1", "DSA");
--
 -            provider.addAlgorithm("Alg.Alias.Signature.1.2.840.10040.4.3", "DSA");
 +            provider.addAlgorithm("Alg.Alias.Signature.1.2.840.10040.4.3", "SHA1withDSA");
 +            // END android-changed
@@ -1261,7 +1301,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/D
                  registerOidAlgorithmParameters(provider, DSAUtil.dsaOids[i], "DSA");
 diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/EC.java bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/asymmetric/EC.java
 --- bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/EC.java	2014-07-26 04:17:24.000000000 +0000
-+++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/asymmetric/EC.java	2014-07-28 19:51:54.000000000 +0000
++++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/asymmetric/EC.java	2015-03-21 01:28:37.000000000 +0000
 @@ -1,8 +1,10 @@
  package org.bouncycastle.jcajce.provider.asymmetric;
  
@@ -1276,7 +1316,28 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/E
  import org.bouncycastle.asn1.x9.X9ObjectIdentifiers;
  import org.bouncycastle.jcajce.provider.asymmetric.ec.KeyFactorySpi;
  import org.bouncycastle.jcajce.provider.config.ConfigurableProvider;
-@@ -22,45 +24,55 @@
+@@ -11,6 +13,20 @@
+ public class EC
+ {
+     private static final String PREFIX = "org.bouncycastle.jcajce.provider.asymmetric" + ".ec.";
++    // BEGIN android-added
++    private static final String SUPPORTED_PRIVATE_KEY_CLASSES =
++            org.bouncycastle.jce.interfaces.ECPrivateKey.class.getName()
++            + "|java.security.interfaces.ECPrivateKey";
++    private static final String SUPPORTED_PUBLIC_KEY_CLASSES =
++            org.bouncycastle.jce.interfaces.ECPublicKey.class.getName()
++            + "|java.security.interfaces.ECPublicKey";
++    private static final String SUPPORTED_KEY_CLASSES =
++            SUPPORTED_PRIVATE_KEY_CLASSES + "|" + SUPPORTED_PUBLIC_KEY_CLASSES;
++    private static final String SUPPORTED_PRIVATE_KEY_FORMATS = "PKCS#8";
++    private static final String SUPPORTED_PUBLIC_KEY_FORMATS = "X.509";
++    private static final String SUPPORTED_KEY_FORMATS =
++            SUPPORTED_PRIVATE_KEY_FORMATS + "|" + SUPPORTED_PUBLIC_KEY_FORMATS;
++    // END android-added
+ 
+     public static class Mappings
+         extends AsymmetricAlgorithmProvider
+@@ -22,48 +38,74 @@
          public void configure(ConfigurableProvider provider)
          {
              provider.addAlgorithm("KeyAgreement.ECDH", PREFIX + "KeyAgreementSpi$DH");
@@ -1285,6 +1346,12 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/E
 -            provider.addAlgorithm("KeyAgreement." + X9ObjectIdentifiers.dhSinglePass_stdDH_sha1kdf_scheme, PREFIX + "KeyAgreementSpi$DHwithSHA1KDF");
 -            provider.addAlgorithm("KeyAgreement." + X9ObjectIdentifiers.mqvSinglePass_sha1kdf_scheme, PREFIX + "KeyAgreementSpi$MQVwithSHA1KDF");
 -            provider.addAlgorithm("KeyAgreement.ECDHWITHSHA1KDF", PREFIX + "KeyAgreementSpi$DHwithSHA1KDF");
++            // BEGIN android-added
++            provider.addAlgorithm("KeyAgreement.ECDH SupportedKeyClasses",
++                    SUPPORTED_PRIVATE_KEY_CLASSES);
++            provider.addAlgorithm("KeyAgreement.ECDH SupportedKeyFormats",
++                    SUPPORTED_PRIVATE_KEY_FORMATS);
++            // END android-added
 +            // BEGIN android-removed
 +            // provider.addAlgorithm("KeyAgreement.ECDHC", PREFIX + "KeyAgreementSpi$DHC");
 +            // provider.addAlgorithm("KeyAgreement.ECMQV", PREFIX + "KeyAgreementSpi$MQV");
@@ -1358,8 +1425,21 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/E
 +            // END android-removed
  
              provider.addAlgorithm("Signature.ECDSA", PREFIX + "SignatureSpi$ecDSA");
++            // BEGIN android-added
++            provider.addAlgorithm("Signature.ECDSA SupportedKeyClasses", SUPPORTED_KEY_CLASSES);
++            provider.addAlgorithm("Signature.ECDSA SupportedKeyFormats", SUPPORTED_KEY_FORMATS);
++            // END android-added
              provider.addAlgorithm("Signature.NONEwithECDSA", PREFIX + "SignatureSpi$ecDSAnone");
-@@ -72,39 +84,43 @@
++            // BEGIN android-added
++            provider.addAlgorithm("Signature.NONEwithECDSA SupportedKeyClasses",
++                    SUPPORTED_KEY_CLASSES);
++            provider.addAlgorithm("Signature.NONEwithECDSA SupportedKeyFormats",
++                    SUPPORTED_KEY_FORMATS);
++            // END android-added
+ 
+             provider.addAlgorithm("Alg.Alias.Signature.SHA1withECDSA", "ECDSA");
+             provider.addAlgorithm("Alg.Alias.Signature.ECDSAwithSHA1", "ECDSA");
+@@ -72,39 +114,45 @@
              provider.addAlgorithm("Alg.Alias.Signature.SHA1WithECDSA", "ECDSA");
              provider.addAlgorithm("Alg.Alias.Signature.ECDSAWithSHA1", "ECDSA");
              provider.addAlgorithm("Alg.Alias.Signature.1.2.840.10045.4.1", "ECDSA");
@@ -1371,21 +1451,11 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/E
 -            provider.addAlgorithm("Signature.SHA256WITHDETECDSA", PREFIX + "SignatureSpi$ecDetDSA256");
 -            provider.addAlgorithm("Signature.SHA384WITHDETECDSA", PREFIX + "SignatureSpi$ecDetDSA384");
 -            provider.addAlgorithm("Signature.SHA512WITHDETECDSA", PREFIX + "SignatureSpi$ecDetDSA512");
-+            // BEGIN android-removed
-+            // provider.addAlgorithm("Alg.Alias.Signature." + TeleTrusTObjectIdentifiers.ecSignWithSha1, "ECDSA");
-+            //
-+            // provider.addAlgorithm("Signature.DETECDSA", PREFIX + "SignatureSpi$ecDetDSA");
-+            // provider.addAlgorithm("Signature.SHA1WITHDETECDSA", PREFIX + "SignatureSpi$ecDetDSA");
-+            // provider.addAlgorithm("Signature.SHA224WITHDETECDSA", PREFIX + "SignatureSpi$ecDetDSA224");
-+            // provider.addAlgorithm("Signature.SHA256WITHDETECDSA", PREFIX + "SignatureSpi$ecDetDSA256");
-+            // provider.addAlgorithm("Signature.SHA384WITHDETECDSA", PREFIX + "SignatureSpi$ecDetDSA384");
-+            // provider.addAlgorithm("Signature.SHA512WITHDETECDSA", PREFIX + "SignatureSpi$ecDetDSA512");
-+            // END android-removed
- 
-             addSignatureAlgorithm(provider, "SHA224", "ECDSA", PREFIX + "SignatureSpi$ecDSA224", X9ObjectIdentifiers.ecdsa_with_SHA224);
-             addSignatureAlgorithm(provider, "SHA256", "ECDSA", PREFIX + "SignatureSpi$ecDSA256", X9ObjectIdentifiers.ecdsa_with_SHA256);
-             addSignatureAlgorithm(provider, "SHA384", "ECDSA", PREFIX + "SignatureSpi$ecDSA384", X9ObjectIdentifiers.ecdsa_with_SHA384);
-             addSignatureAlgorithm(provider, "SHA512", "ECDSA", PREFIX + "SignatureSpi$ecDSA512", X9ObjectIdentifiers.ecdsa_with_SHA512);
+-
+-            addSignatureAlgorithm(provider, "SHA224", "ECDSA", PREFIX + "SignatureSpi$ecDSA224", X9ObjectIdentifiers.ecdsa_with_SHA224);
+-            addSignatureAlgorithm(provider, "SHA256", "ECDSA", PREFIX + "SignatureSpi$ecDSA256", X9ObjectIdentifiers.ecdsa_with_SHA256);
+-            addSignatureAlgorithm(provider, "SHA384", "ECDSA", PREFIX + "SignatureSpi$ecDSA384", X9ObjectIdentifiers.ecdsa_with_SHA384);
+-            addSignatureAlgorithm(provider, "SHA512", "ECDSA", PREFIX + "SignatureSpi$ecDSA512", X9ObjectIdentifiers.ecdsa_with_SHA512);
 -            addSignatureAlgorithm(provider, "RIPEMD160", "ECDSA", PREFIX + "SignatureSpi$ecDSARipeMD160",TeleTrusTObjectIdentifiers.ecSignWithRipemd160);
 -
 -            provider.addAlgorithm("Signature.SHA1WITHECNR", PREFIX + "SignatureSpi$ecNR");
@@ -1406,6 +1476,23 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/E
 -            addSignatureAlgorithm(provider, "SHA384", "PLAIN-ECDSA", PREFIX + "SignatureSpi$ecCVCDSA384", BSIObjectIdentifiers.ecdsa_plain_SHA384);
 -            addSignatureAlgorithm(provider, "SHA512", "PLAIN-ECDSA", PREFIX + "SignatureSpi$ecCVCDSA512", BSIObjectIdentifiers.ecdsa_plain_SHA512);
 -            addSignatureAlgorithm(provider, "RIPEMD160", "PLAIN-ECDSA", PREFIX + "SignatureSpi$ecPlainDSARP160", BSIObjectIdentifiers.ecdsa_plain_RIPEMD160);
++            // BEGIN android-removed
++            // provider.addAlgorithm("Alg.Alias.Signature." + TeleTrusTObjectIdentifiers.ecSignWithSha1, "ECDSA");
++            //
++            // provider.addAlgorithm("Signature.DETECDSA", PREFIX + "SignatureSpi$ecDetDSA");
++            // provider.addAlgorithm("Signature.SHA1WITHDETECDSA", PREFIX + "SignatureSpi$ecDetDSA");
++            // provider.addAlgorithm("Signature.SHA224WITHDETECDSA", PREFIX + "SignatureSpi$ecDetDSA224");
++            // provider.addAlgorithm("Signature.SHA256WITHDETECDSA", PREFIX + "SignatureSpi$ecDetDSA256");
++            // provider.addAlgorithm("Signature.SHA384WITHDETECDSA", PREFIX + "SignatureSpi$ecDetDSA384");
++            // provider.addAlgorithm("Signature.SHA512WITHDETECDSA", PREFIX + "SignatureSpi$ecDetDSA512");
++            // END android-removed
++
++            // BEGIN android-changed
++            addSignatureAlgorithm(provider, "SHA224", "ECDSA", PREFIX + "SignatureSpi$ecDSA224", X9ObjectIdentifiers.ecdsa_with_SHA224, SUPPORTED_KEY_CLASSES, SUPPORTED_KEY_FORMATS);
++            addSignatureAlgorithm(provider, "SHA256", "ECDSA", PREFIX + "SignatureSpi$ecDSA256", X9ObjectIdentifiers.ecdsa_with_SHA256, SUPPORTED_KEY_CLASSES, SUPPORTED_KEY_FORMATS);
++            addSignatureAlgorithm(provider, "SHA384", "ECDSA", PREFIX + "SignatureSpi$ecDSA384", X9ObjectIdentifiers.ecdsa_with_SHA384, SUPPORTED_KEY_CLASSES, SUPPORTED_KEY_FORMATS);
++            addSignatureAlgorithm(provider, "SHA512", "ECDSA", PREFIX + "SignatureSpi$ecDSA512", X9ObjectIdentifiers.ecdsa_with_SHA512, SUPPORTED_KEY_CLASSES, SUPPORTED_KEY_FORMATS);
++            // END android-changed
 +            // BEGIN android-removed
 +            // addSignatureAlgorithm(provider, "RIPEMD160", "ECDSA", PREFIX + "SignatureSpi$ecDSARipeMD160",TeleTrusTObjectIdentifiers.ecSignWithRipemd160);
 +            //
@@ -1433,7 +1520,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/E
  }
 diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/RSA.java bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/asymmetric/RSA.java
 --- bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/RSA.java	2014-07-26 04:17:24.000000000 +0000
-+++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/asymmetric/RSA.java	2014-07-28 19:51:54.000000000 +0000
++++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/asymmetric/RSA.java	2015-03-21 01:28:37.000000000 +0000
 @@ -3,7 +3,9 @@
  import org.bouncycastle.asn1.ASN1ObjectIdentifier;
  import org.bouncycastle.asn1.oiw.OIWObjectIdentifiers;
@@ -1445,7 +1532,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/R
  import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
  import org.bouncycastle.jcajce.provider.asymmetric.rsa.KeyFactorySpi;
  import org.bouncycastle.jcajce.provider.config.ConfigurableProvider;
-@@ -24,41 +26,49 @@
+@@ -24,41 +26,53 @@
          public void configure(ConfigurableProvider provider)
          {
              provider.addAlgorithm("AlgorithmParameters.OAEP", PREFIX + "AlgorithmParametersSpi$OAEP");
@@ -1498,6 +1585,10 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/R
 -            provider.addAlgorithm("Cipher.RSA/OAEP", PREFIX + "CipherSpi$OAEPPadding");
 -            provider.addAlgorithm("Cipher." + PKCSObjectIdentifiers.id_RSAES_OAEP, PREFIX + "CipherSpi$OAEPPadding");
 -            provider.addAlgorithm("Cipher.RSA/ISO9796-1", PREFIX + "CipherSpi$ISO9796d1Padding");
++            // BEGIN android-added
++            provider.addAlgorithm("Cipher.RSA SupportedKeyClasses",
++                    "java.security.interfaces.RSAPrivateKey|java.security.interfaces.RSAPublicKey");
++            // END android-added
 +            // BEGIN android-changed
 +            provider.addAlgorithm("Alg.Alias.Cipher.RSA/RAW", "RSA");
 +            // END android-changed
@@ -1525,7 +1616,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/R
  
              provider.addAlgorithm("KeyFactory.RSA", PREFIX + "KeyFactorySpi");
              provider.addAlgorithm("KeyPairGenerator.RSA", PREFIX + "KeyPairGeneratorSpi");
-@@ -68,73 +78,81 @@
+@@ -68,73 +82,81 @@
              registerOid(provider, PKCSObjectIdentifiers.rsaEncryption, "RSA", keyFact);
              registerOid(provider, X509ObjectIdentifiers.id_ea_rsa, "RSA", keyFact);
              registerOid(provider, PKCSObjectIdentifiers.id_RSAES_OAEP, "RSA", keyFact);
@@ -1663,7 +1754,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/R
                  provider.addAlgorithm("Alg.Alias.Signature." + OIWObjectIdentifiers.sha1WithRSA, "SHA1WITHRSA");
                  provider.addAlgorithm("Alg.Alias.Signature.OID." + OIWObjectIdentifiers.sha1WithRSA, "SHA1WITHRSA");
              }
-@@ -144,25 +162,27 @@
+@@ -144,25 +166,27 @@
              addDigestSignature(provider, "SHA384", PREFIX + "DigestSignatureSpi$SHA384", PKCSObjectIdentifiers.sha384WithRSAEncryption);
              addDigestSignature(provider, "SHA512", PREFIX + "DigestSignatureSpi$SHA512", PKCSObjectIdentifiers.sha512WithRSAEncryption);
  
@@ -1710,6 +1801,17 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/R
          }
  
          private void addDigestSignature(
+@@ -180,6 +204,10 @@
+             String longJdk11Variation2 = digest + "WithRSAEncryption";
+ 
+             provider.addAlgorithm("Signature." + mainName, className);
++            // BEGIN android-added
++            provider.addAlgorithm("Signature." + mainName + " SupportedKeyClasses",
++                    "java.security.interfaces.RSAPrivateKey|java.security.interfaces.RSAPublicKey");
++            // END android-added
+             provider.addAlgorithm("Alg.Alias.Signature." + jdk11Variation1, mainName);
+             provider.addAlgorithm("Alg.Alias.Signature." + jdk11Variation2, mainName);
+             provider.addAlgorithm("Alg.Alias.Signature." + longName, mainName);
 diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/X509.java bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/asymmetric/X509.java
 --- bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/X509.java	2014-07-26 04:17:24.000000000 +0000
 +++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/asymmetric/X509.java	2012-09-17 23:04:47.000000000 +0000
@@ -3498,6 +3600,19 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/asymmetric/x
          else
          {
              return digestAlgOID.getId();            
+diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/digest/DigestAlgorithmProvider.java bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/digest/DigestAlgorithmProvider.java
+--- bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/digest/DigestAlgorithmProvider.java	2014-07-26 04:17:24.000000000 +0000
++++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/digest/DigestAlgorithmProvider.java	2015-03-21 01:28:37.000000000 +0000
+@@ -16,6 +16,9 @@
+         String mainName = "HMAC" + algorithm;
+ 
+         provider.addAlgorithm("Mac." + mainName, algorithmClassName);
++        // BEGIN android-added
++        provider.addAlgorithm("Mac." + mainName + " SupportedKeyFormats", "RAW");
++        // END android-added
+         provider.addAlgorithm("Alg.Alias.Mac.HMAC-" + algorithm, mainName);
+         provider.addAlgorithm("Alg.Alias.Mac.HMAC/" + algorithm, mainName);
+         provider.addAlgorithm("KeyGenerator." + mainName, keyGeneratorClassName);
 diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/digest/SHA256.java bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/digest/SHA256.java
 --- bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/digest/SHA256.java	2014-07-26 04:17:24.000000000 +0000
 +++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/digest/SHA256.java	2013-05-25 02:14:15.000000000 +0000
@@ -4010,7 +4125,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/keystore/pkc
          }
 diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/AES.java bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/AES.java
 --- bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/AES.java	2014-07-26 04:17:24.000000000 +0000
-+++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/AES.java	2014-07-28 19:51:54.000000000 +0000
++++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/AES.java	2015-03-21 01:28:37.000000000 +0000
 @@ -3,13 +3,17 @@
  import java.io.IOException;
  import java.lang.reflect.Constructor;
@@ -4032,7 +4147,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/AE
  
  import org.bouncycastle.asn1.bc.BCObjectIdentifiers;
  import org.bouncycastle.asn1.cms.GCMParameters;
-@@ -19,26 +23,34 @@
+@@ -19,26 +23,35 @@
  import org.bouncycastle.crypto.CipherKeyGenerator;
  import org.bouncycastle.crypto.engines.AESFastEngine;
  import org.bouncycastle.crypto.engines.AESWrapEngine;
@@ -4054,6 +4169,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/AE
  import org.bouncycastle.crypto.modes.OFBBlockCipher;
  import org.bouncycastle.jcajce.provider.config.ConfigurableProvider;
 -import org.bouncycastle.jcajce.provider.symmetric.util.BaseAlgorithmParameterGenerator;
++import org.bouncycastle.jcajce.provider.symmetric.util.BCPBEKey;
 +// BEGIN android-removed
 +// import org.bouncycastle.jcajce.provider.symmetric.util.BaseAlgorithmParameterGenerator;
 +// END android-removed
@@ -4075,7 +4191,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/AE
  import org.bouncycastle.util.Integers;
  
  public final class AES
-@@ -100,41 +112,43 @@
+@@ -100,41 +113,43 @@
          }
      }
  
@@ -4154,7 +4270,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/AE
  
      static public class Wrap
          extends BaseWrapCipher
-@@ -145,23 +159,25 @@
+@@ -145,23 +160,25 @@
          }
      }
  
@@ -4197,7 +4313,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/AE
  
      /**
       * PBEWithAES-CBC
-@@ -189,32 +205,34 @@
+@@ -189,32 +206,34 @@
          }
      }
  
@@ -4258,7 +4374,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/AE
      
      /**
       * PBEWithSHA1And128BitAES-BC
-@@ -324,43 +342,45 @@
+@@ -324,43 +343,45 @@
          }
      }
      
@@ -4341,7 +4457,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/AE
  
      public static class AlgParams
          extends IvAlgorithmParameters
-@@ -493,37 +513,43 @@
+@@ -493,65 +514,79 @@
              provider.addAlgorithm("Alg.Alias.AlgorithmParameters." + NISTObjectIdentifiers.id_aes192_GCM, "GCM");
              provider.addAlgorithm("Alg.Alias.AlgorithmParameters." + NISTObjectIdentifiers.id_aes256_GCM, "GCM");
  
@@ -4352,6 +4468,8 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/AE
 -            provider.addAlgorithm("Alg.Alias.AlgorithmParameterGenerator." + NISTObjectIdentifiers.id_aes128_CBC, "AES");
 -            provider.addAlgorithm("Alg.Alias.AlgorithmParameterGenerator." + NISTObjectIdentifiers.id_aes192_CBC, "AES");
 -            provider.addAlgorithm("Alg.Alias.AlgorithmParameterGenerator." + NISTObjectIdentifiers.id_aes256_CBC, "AES");
+-
+-            provider.addAlgorithm("Cipher.AES", PREFIX + "$ECB");
 +            // BEGIN android-removed
 +            // provider.addAlgorithm("AlgorithmParameterGenerator.AES", PREFIX + "$AlgParamGen");
 +            // provider.addAlgorithm("Alg.Alias.AlgorithmParameterGenerator." + wrongAES128, "AES");
@@ -4361,8 +4479,10 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/AE
 +            // provider.addAlgorithm("Alg.Alias.AlgorithmParameterGenerator." + NISTObjectIdentifiers.id_aes192_CBC, "AES");
 +            // provider.addAlgorithm("Alg.Alias.AlgorithmParameterGenerator." + NISTObjectIdentifiers.id_aes256_CBC, "AES");
 +            // END android-removed
- 
-             provider.addAlgorithm("Cipher.AES", PREFIX + "$ECB");
++
++            // BEGIN android-changed
++            addCipherImpl(provider, "AES", PREFIX + "$ECB");
++            // END android-changed
              provider.addAlgorithm("Alg.Alias.Cipher." + wrongAES128, "AES");
              provider.addAlgorithm("Alg.Alias.Cipher." + wrongAES192, "AES");
              provider.addAlgorithm("Alg.Alias.Cipher." + wrongAES256, "AES");
@@ -4378,6 +4498,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/AE
 -            provider.addAlgorithm("Cipher." + NISTObjectIdentifiers.id_aes128_CFB, PREFIX + "$CFB");
 -            provider.addAlgorithm("Cipher." + NISTObjectIdentifiers.id_aes192_CFB, PREFIX + "$CFB");
 -            provider.addAlgorithm("Cipher." + NISTObjectIdentifiers.id_aes256_CFB, PREFIX + "$CFB");
+-            provider.addAlgorithm("Cipher.AESWRAP", PREFIX + "$Wrap");
 +            // BEGIN android-removed
 +            // provider.addAlgorithm("Cipher." + NISTObjectIdentifiers.id_aes128_ECB, PREFIX + "$ECB");
 +            // provider.addAlgorithm("Cipher." + NISTObjectIdentifiers.id_aes192_ECB, PREFIX + "$ECB");
@@ -4392,21 +4513,27 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/AE
 +            // provider.addAlgorithm("Cipher." + NISTObjectIdentifiers.id_aes192_CFB, PREFIX + "$CFB");
 +            // provider.addAlgorithm("Cipher." + NISTObjectIdentifiers.id_aes256_CFB, PREFIX + "$CFB");
 +            // END android-removed
-             provider.addAlgorithm("Cipher.AESWRAP", PREFIX + "$Wrap");
++            // BEGIN android-changed
++            addCipherImpl(provider, "AESWRAP", PREFIX + "$Wrap");
++            // END android-changed
              provider.addAlgorithm("Alg.Alias.Cipher." + NISTObjectIdentifiers.id_aes128_wrap, "AESWRAP");
              provider.addAlgorithm("Alg.Alias.Cipher." + NISTObjectIdentifiers.id_aes192_wrap, "AESWRAP");
              provider.addAlgorithm("Alg.Alias.Cipher." + NISTObjectIdentifiers.id_aes256_wrap, "AESWRAP");
  
 -            provider.addAlgorithm("Cipher.AESRFC3211WRAP", PREFIX + "$RFC3211Wrap");
 -            provider.addAlgorithm("Cipher.AESRFC5649WRAP", PREFIX + "$RFC5649Wrap");
+-
+-            provider.addAlgorithm("Cipher.GCM", PREFIX + "$GCM");
 +            // BEGIN android-removed
 +            // provider.addAlgorithm("Cipher.AESRFC3211WRAP", PREFIX + "$RFC3211Wrap");
 +            // provider.addAlgorithm("Cipher.AESRFC5649WRAP", PREFIX + "$RFC5649Wrap");
 +            // END android-removed
- 
-             provider.addAlgorithm("Cipher.GCM", PREFIX + "$GCM");
++
++            // BEGIN android-changed
++            addCipherImpl(provider, "GCM", PREFIX + "$GCM");
++            // END android-changed
              provider.addAlgorithm("Alg.Alias.Cipher." + NISTObjectIdentifiers.id_aes128_GCM, "GCM");
-@@ -531,27 +557,29 @@
+             provider.addAlgorithm("Alg.Alias.Cipher." + NISTObjectIdentifiers.id_aes192_GCM, "GCM");
              provider.addAlgorithm("Alg.Alias.Cipher." + NISTObjectIdentifiers.id_aes256_GCM, "GCM");
  
              provider.addAlgorithm("KeyGenerator.AES", PREFIX + "$KeyGen");
@@ -4457,7 +4584,51 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/AE
              
              provider.addAlgorithm("Alg.Alias.Cipher." + BCObjectIdentifiers.bc_pbe_sha1_pkcs12_aes128_cbc.getId(), "PBEWITHSHAAND128BITAES-CBC-BC");
              provider.addAlgorithm("Alg.Alias.Cipher." + BCObjectIdentifiers.bc_pbe_sha1_pkcs12_aes192_cbc.getId(), "PBEWITHSHAAND192BITAES-CBC-BC");
-@@ -630,8 +658,10 @@
+@@ -559,14 +594,16 @@
+             provider.addAlgorithm("Alg.Alias.Cipher." + BCObjectIdentifiers.bc_pbe_sha256_pkcs12_aes128_cbc.getId(), "PBEWITHSHA256AND128BITAES-CBC-BC");
+             provider.addAlgorithm("Alg.Alias.Cipher." + BCObjectIdentifiers.bc_pbe_sha256_pkcs12_aes192_cbc.getId(), "PBEWITHSHA256AND192BITAES-CBC-BC");
+             provider.addAlgorithm("Alg.Alias.Cipher." + BCObjectIdentifiers.bc_pbe_sha256_pkcs12_aes256_cbc.getId(), "PBEWITHSHA256AND256BITAES-CBC-BC");
+-    
+-            provider.addAlgorithm("Cipher.PBEWITHSHAAND128BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
+-            provider.addAlgorithm("Cipher.PBEWITHSHAAND192BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
+-            provider.addAlgorithm("Cipher.PBEWITHSHAAND256BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
+-            provider.addAlgorithm("Cipher.PBEWITHSHA256AND128BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
+-            provider.addAlgorithm("Cipher.PBEWITHSHA256AND192BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
+-            provider.addAlgorithm("Cipher.PBEWITHSHA256AND256BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
+-            
++
++            // BEGIN android-changed
++            addCipherImpl(provider, "PBEWITHSHAAND128BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
++            addCipherImpl(provider, "PBEWITHSHAAND192BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
++            addCipherImpl(provider, "PBEWITHSHAAND256BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
++            addCipherImpl(provider, "PBEWITHSHA256AND128BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
++            addCipherImpl(provider, "PBEWITHSHA256AND192BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
++            addCipherImpl(provider, "PBEWITHSHA256AND256BITAES-CBC-BC", PREFIX + "$PBEWithAESCBC");
++            // END android-changed
++
+             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA1AND128BITAES-CBC-BC","PBEWITHSHAAND128BITAES-CBC-BC");
+             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA1AND192BITAES-CBC-BC","PBEWITHSHAAND192BITAES-CBC-BC");
+             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA1AND256BITAES-CBC-BC","PBEWITHSHAAND256BITAES-CBC-BC");
+@@ -576,11 +613,13 @@
+             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA-256AND128BITAES-CBC-BC","PBEWITHSHA256AND128BITAES-CBC-BC");
+             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA-256AND192BITAES-CBC-BC","PBEWITHSHA256AND192BITAES-CBC-BC");
+             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA-256AND256BITAES-CBC-BC","PBEWITHSHA256AND256BITAES-CBC-BC");
+-            
+-            provider.addAlgorithm("Cipher.PBEWITHMD5AND128BITAES-CBC-OPENSSL", PREFIX + "$PBEWithAESCBC");
+-            provider.addAlgorithm("Cipher.PBEWITHMD5AND192BITAES-CBC-OPENSSL", PREFIX + "$PBEWithAESCBC");
+-            provider.addAlgorithm("Cipher.PBEWITHMD5AND256BITAES-CBC-OPENSSL", PREFIX + "$PBEWithAESCBC");
+-            
++
++            // BEGIN android-changed
++            addCipherImpl(provider, "PBEWITHMD5AND128BITAES-CBC-OPENSSL", PREFIX + "$PBEWithAESCBC");
++            addCipherImpl(provider, "PBEWITHMD5AND192BITAES-CBC-OPENSSL", PREFIX + "$PBEWithAESCBC");
++            addCipherImpl(provider, "PBEWITHMD5AND256BITAES-CBC-OPENSSL", PREFIX + "$PBEWithAESCBC");
++            // END android-changed
++
+             provider.addAlgorithm("SecretKeyFactory.PBEWITHMD5AND128BITAES-CBC-OPENSSL", PREFIX + "$PBEWithMD5And128BitAESCBCOpenSSL");
+             provider.addAlgorithm("SecretKeyFactory.PBEWITHMD5AND192BITAES-CBC-OPENSSL", PREFIX + "$PBEWithMD5And192BitAESCBCOpenSSL");
+             provider.addAlgorithm("SecretKeyFactory.PBEWITHMD5AND256BITAES-CBC-OPENSSL", PREFIX + "$PBEWithMD5And256BitAESCBCOpenSSL");
+@@ -630,9 +669,18 @@
              provider.addAlgorithm("Alg.Alias.AlgorithmParameters." + BCObjectIdentifiers.bc_pbe_sha256_pkcs12_aes192_cbc.getId(), "PKCS12PBE");
              provider.addAlgorithm("Alg.Alias.AlgorithmParameters." + BCObjectIdentifiers.bc_pbe_sha256_pkcs12_aes256_cbc.getId(), "PKCS12PBE");
  
@@ -4467,12 +4638,20 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/AE
 +            // addGMacAlgorithm(provider, "AES", PREFIX + "$AESGMAC", PREFIX + "$KeyGen128");
 +            // addPoly1305Algorithm(provider, "AES", PREFIX + "$Poly1305", PREFIX + "$Poly1305KeyGen");
 +            // END android-removed
++        }
++        // BEGIN android-added
++        private void addCipherImpl(ConfigurableProvider provider, String algorithm,
++                String implClass) {
++            provider.addAlgorithm("Cipher." + algorithm, implClass);
++            provider.addAlgorithm("Cipher." + algorithm + " SupportedKeyFormats", "RAW");
          }
++        // END android-added
      }
  
+     private static Class lookup(String className)
 diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/ARC4.java bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/ARC4.java
 --- bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/ARC4.java	2014-07-26 04:17:24.000000000 +0000
-+++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/ARC4.java	2013-05-25 02:14:15.000000000 +0000
++++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/ARC4.java	2015-03-21 01:28:37.000000000 +0000
 @@ -29,7 +29,9 @@
      {
          public KeyGen()
@@ -4484,14 +4663,54 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/AR
          }
      }
  
+@@ -93,7 +95,9 @@
+ 
+         public void configure(ConfigurableProvider provider)
+         {
+-            provider.addAlgorithm("Cipher.ARC4", PREFIX + "$Base");
++            // BEGIN android-changed
++            addCipherImpl(provider, "ARC4", PREFIX + "$Base");
++            // END android-changed
+             provider.addAlgorithm("Alg.Alias.Cipher." + PKCSObjectIdentifiers.rc4, "ARC4");
+             provider.addAlgorithm("Alg.Alias.Cipher.ARCFOUR", "ARC4");
+             provider.addAlgorithm("Alg.Alias.Cipher.RC4", "ARC4");
+@@ -108,8 +112,10 @@
+             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAAND40BITRC4", "PKCS12PBE");
+             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAAND128BITRC4", "PKCS12PBE");
+             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAANDRC4", "PKCS12PBE");
+-            provider.addAlgorithm("Cipher.PBEWITHSHAAND128BITRC4", PREFIX + "$PBEWithSHAAnd128Bit");
+-            provider.addAlgorithm("Cipher.PBEWITHSHAAND40BITRC4", PREFIX + "$PBEWithSHAAnd40Bit");
++            // BEGIN android-changed
++            addCipherImpl(provider, "PBEWITHSHAAND128BITRC4", PREFIX + "$PBEWithSHAAnd128Bit");
++            addCipherImpl(provider, "PBEWITHSHAAND40BITRC4", PREFIX + "$PBEWithSHAAnd40Bit");
++            // END android-changed
+ 
+             provider.addAlgorithm("Alg.Alias.SecretKeyFactory." + PKCSObjectIdentifiers.pbeWithSHAAnd128BitRC4, "PBEWITHSHAAND128BITRC4");
+             provider.addAlgorithm("Alg.Alias.SecretKeyFactory." + PKCSObjectIdentifiers.pbeWithSHAAnd40BitRC4, "PBEWITHSHAAND40BITRC4");
+@@ -120,5 +126,12 @@
+             provider.addAlgorithm("Alg.Alias.Cipher." + PKCSObjectIdentifiers.pbeWithSHAAnd128BitRC4, "PBEWITHSHAAND128BITRC4");
+             provider.addAlgorithm("Alg.Alias.Cipher." + PKCSObjectIdentifiers.pbeWithSHAAnd40BitRC4, "PBEWITHSHAAND40BITRC4");
+         }
++        // BEGIN android-added
++        private void addCipherImpl(ConfigurableProvider provider, String algorithm,
++                String implClass) {
++            provider.addAlgorithm("Cipher." + algorithm, implClass);
++            provider.addAlgorithm("Cipher." + algorithm + " SupportedKeyFormats", "RAW");
++        }
++        // END android-added
+     }
+ }
 diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/Blowfish.java bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/Blowfish.java
 --- bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/Blowfish.java	2014-07-26 04:17:24.000000000 +0000
-+++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/Blowfish.java	2012-09-17 23:04:47.000000000 +0000
-@@ -64,7 +64,9 @@
++++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/Blowfish.java	2015-03-21 01:28:37.000000000 +0000
+@@ -64,7 +64,12 @@
          {
  
              provider.addAlgorithm("Cipher.BLOWFISH", PREFIX + "$ECB");
 -            provider.addAlgorithm("Cipher.1.3.6.1.4.1.3029.1.2", PREFIX + "$CBC");
++            // BEGIN android-added
++            provider.addAlgorithm("Cipher.BLOWFISH SupportedKeyFormats", "RAW");
++            // END android-added
 +            // BEGIN android-removed
 +            // provider.addAlgorithm("Cipher.1.3.6.1.4.1.3029.1.2", PREFIX + "$CBC");
 +            // END android-removed
@@ -4500,7 +4719,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/Bl
              provider.addAlgorithm("AlgorithmParameters.BLOWFISH", PREFIX + "$AlgParams");
 diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/DES.java bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/DES.java
 --- bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/DES.java	2014-07-26 04:17:24.000000000 +0000
-+++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/DES.java	2013-05-25 02:14:15.000000000 +0000
++++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/DES.java	2015-03-21 01:28:37.000000000 +0000
 @@ -19,12 +19,16 @@
  import org.bouncycastle.crypto.CipherParameters;
  import org.bouncycastle.crypto.KeyGenerationParameters;
@@ -4706,15 +4925,19 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/DE
  
      /**
       * PBEWithMD5AndDES
-@@ -437,61 +449,75 @@
+@@ -436,62 +448,80 @@
+         public void configure(ConfigurableProvider provider)
          {
  
-             provider.addAlgorithm("Cipher.DES", PREFIX + "$ECB");
+-            provider.addAlgorithm("Cipher.DES", PREFIX + "$ECB");
 -            provider.addAlgorithm("Cipher." + OIWObjectIdentifiers.desCBC, PREFIX + "$CBC");
 -
 -            addAlias(provider, OIWObjectIdentifiers.desCBC, "DES");
 -
 -            provider.addAlgorithm("Cipher.DESRFC3211WRAP", PREFIX + "$RFC3211");
++            // BEGIN android-changed
++            addCipherImpl(provider, "DES", PREFIX + "$ECB");
++            // END android-changed
 +            // BEGIN android-removed
 +            // provider.addAlgorithm("Cipher." + OIWObjectIdentifiers.desCBC, PREFIX + "$CBC");
 +            //
@@ -4781,16 +5004,21 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/DE
 -            provider.addAlgorithm("Alg.Alias.AlgorithmParameterGenerator." + OIWObjectIdentifiers.desCBC, "DES");
 -
 -            provider.addAlgorithm("Cipher.PBEWITHMD2ANDDES", PREFIX + "$PBEWithMD2");
+-            provider.addAlgorithm("Cipher.PBEWITHMD5ANDDES", PREFIX + "$PBEWithMD5");
+-            provider.addAlgorithm("Cipher.PBEWITHSHA1ANDDES", PREFIX + "$PBEWithSHA1");
+-            
+-            provider.addAlgorithm("Alg.Alias.Cipher." + PKCSObjectIdentifiers.pbeWithMD2AndDES_CBC, "PBEWITHMD2ANDDES");
 +            // BEGIN android-removed
 +            // provider.addAlgorithm("AlgorithmParameterGenerator.DES",  PREFIX + "$AlgParamGen");
 +            // provider.addAlgorithm("Alg.Alias.AlgorithmParameterGenerator." + OIWObjectIdentifiers.desCBC, "DES");
 +            //
 +            // provider.addAlgorithm("Cipher.PBEWITHMD2ANDDES", PREFIX + "$PBEWithMD2");
 +            // END android-removed
-             provider.addAlgorithm("Cipher.PBEWITHMD5ANDDES", PREFIX + "$PBEWithMD5");
-             provider.addAlgorithm("Cipher.PBEWITHSHA1ANDDES", PREFIX + "$PBEWithSHA1");
-             
--            provider.addAlgorithm("Alg.Alias.Cipher." + PKCSObjectIdentifiers.pbeWithMD2AndDES_CBC, "PBEWITHMD2ANDDES");
++            // BEGIN android-changed
++            addCipherImpl(provider, "PBEWITHMD5ANDDES", PREFIX + "$PBEWithMD5");
++            addCipherImpl(provider, "PBEWITHSHA1ANDDES", PREFIX + "$PBEWithSHA1");
++            // END android-changed
++
 +            // BEGIN android-removed
 +            // provider.addAlgorithm("Alg.Alias.Cipher." + PKCSObjectIdentifiers.pbeWithMD2AndDES_CBC, "PBEWITHMD2ANDDES");
 +            // END android-removed
@@ -4817,9 +5045,22 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/DE
              provider.addAlgorithm("Alg.Alias.SecretKeyFactory." + PKCSObjectIdentifiers.pbeWithMD5AndDES_CBC, "PBEWITHMD5ANDDES");
              provider.addAlgorithm("Alg.Alias.SecretKeyFactory." + PKCSObjectIdentifiers.pbeWithSHA1AndDES_CBC, "PBEWITHSHA1ANDDES");
          }
+@@ -501,5 +531,12 @@
+             provider.addAlgorithm("Alg.Alias.KeyGenerator." + oid.getId(), name);
+             provider.addAlgorithm("Alg.Alias.KeyFactory." + oid.getId(), name);
+         }
++        // BEGIN android-added
++        private void addCipherImpl(ConfigurableProvider provider, String algorithm,
++                String implClass) {
++            provider.addAlgorithm("Cipher." + algorithm, implClass);
++            provider.addAlgorithm("Cipher." + algorithm + " SupportedKeyFormats", "RAW");
++        }
++        // END android-added
+     }
+ }
 diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/DESede.java bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/DESede.java
 --- bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/DESede.java	2014-07-26 04:17:24.000000000 +0000
-+++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/DESede.java	2013-05-25 02:14:15.000000000 +0000
++++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/DESede.java	2015-03-21 01:28:37.000000000 +0000
 @@ -1,30 +1,42 @@
  package org.bouncycastle.jcajce.provider.symmetric;
  
@@ -5039,18 +5280,23 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/DE
  
      static public class KeyFactory
          extends BaseSecretKeyFactory
-@@ -361,25 +381,37 @@
+@@ -360,26 +380,44 @@
+ 
          public void configure(ConfigurableProvider provider)
          {
-             provider.addAlgorithm("Cipher.DESEDE", PREFIX + "$ECB");
+-            provider.addAlgorithm("Cipher.DESEDE", PREFIX + "$ECB");
 -            provider.addAlgorithm("Cipher." + PKCSObjectIdentifiers.des_EDE3_CBC, PREFIX + "$CBC");
-+            // BEGIN android-removed
-+            // provider.addAlgorithm("Cipher." + PKCSObjectIdentifiers.des_EDE3_CBC, PREFIX + "$CBC");
-+            // END android-removed
-             provider.addAlgorithm("Cipher.DESEDEWRAP", PREFIX + "$Wrap");
+-            provider.addAlgorithm("Cipher.DESEDEWRAP", PREFIX + "$Wrap");
 -            provider.addAlgorithm("Cipher." + PKCSObjectIdentifiers.id_alg_CMS3DESwrap, PREFIX + "$Wrap");
 -            provider.addAlgorithm("Cipher.DESEDERFC3211WRAP", PREFIX + "$RFC3211");
 +            // BEGIN android-changed
++            addCipherImpl(provider, "DESEDE", PREFIX + "$ECB");
++            // END android-changed
++            // BEGIN android-removed
++            // provider.addAlgorithm("Cipher." + PKCSObjectIdentifiers.des_EDE3_CBC, PREFIX + "$CBC");
++            // END android-removed
++            // BEGIN android-changed
++            addCipherImpl(provider, "DESEDEWRAP", PREFIX + "$Wrap");
 +            provider.addAlgorithm("Alg.Alias.Cipher." + PKCSObjectIdentifiers.id_alg_CMS3DESwrap, "DESEDEWRAP");
 +            // END android-changed
 +            // BEGIN android-removed
@@ -5069,22 +5315,28 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/DE
  
              if (provider.hasAlgorithm("MessageDigest", "SHA-1"))
              {
-                 provider.addAlgorithm("Cipher.PBEWITHSHAAND3-KEYTRIPLEDES-CBC", PREFIX + "$PBEWithSHAAndDES3Key");
+-                provider.addAlgorithm("Cipher.PBEWITHSHAAND3-KEYTRIPLEDES-CBC", PREFIX + "$PBEWithSHAAndDES3Key");
 -                provider.addAlgorithm("Cipher.BROKENPBEWITHSHAAND3-KEYTRIPLEDES-CBC", PREFIX + "$BrokePBEWithSHAAndDES3Key");
 -                provider.addAlgorithm("Cipher.OLDPBEWITHSHAAND3-KEYTRIPLEDES-CBC", PREFIX + "$OldPBEWithSHAAndDES3Key");
+-                provider.addAlgorithm("Cipher.PBEWITHSHAAND2-KEYTRIPLEDES-CBC", PREFIX + "$PBEWithSHAAndDES2Key");
+-                provider.addAlgorithm("Cipher.BROKENPBEWITHSHAAND2-KEYTRIPLEDES-CBC", PREFIX + "$BrokePBEWithSHAAndDES2Key");
++                // BEGIN android-changed
++                addCipherImpl(provider, "PBEWITHSHAAND3-KEYTRIPLEDES-CBC", PREFIX + "$PBEWithSHAAndDES3Key");
++                // END android-changed
 +                // BEGIN android-removed
 +                // provider.addAlgorithm("Cipher.BROKENPBEWITHSHAAND3-KEYTRIPLEDES-CBC", PREFIX + "$BrokePBEWithSHAAndDES3Key");
 +                // provider.addAlgorithm("Cipher.OLDPBEWITHSHAAND3-KEYTRIPLEDES-CBC", PREFIX + "$OldPBEWithSHAAndDES3Key");
 +                // END android-removed
-                 provider.addAlgorithm("Cipher.PBEWITHSHAAND2-KEYTRIPLEDES-CBC", PREFIX + "$PBEWithSHAAndDES2Key");
--                provider.addAlgorithm("Cipher.BROKENPBEWITHSHAAND2-KEYTRIPLEDES-CBC", PREFIX + "$BrokePBEWithSHAAndDES2Key");
++                // BEGIN android-changed
++                addCipherImpl(provider, "PBEWITHSHAAND2-KEYTRIPLEDES-CBC", PREFIX + "$PBEWithSHAAndDES2Key");
++                // END android-changed
 +                // BEGIN android-removed
 +                // provider.addAlgorithm("Cipher.BROKENPBEWITHSHAAND2-KEYTRIPLEDES-CBC", PREFIX + "$BrokePBEWithSHAAndDES2Key");
 +                // END android-removed
                  provider.addAlgorithm("Alg.Alias.Cipher." + PKCSObjectIdentifiers.pbeWithSHAAnd3_KeyTripleDES_CBC, "PBEWITHSHAAND3-KEYTRIPLEDES-CBC");
                  provider.addAlgorithm("Alg.Alias.Cipher." + PKCSObjectIdentifiers.pbeWithSHAAnd2_KeyTripleDES_CBC, "PBEWITHSHAAND2-KEYTRIPLEDES-CBC");
                  provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA1ANDDESEDE", "PBEWITHSHAAND3-KEYTRIPLEDES-CBC");
-@@ -388,31 +420,37 @@
+@@ -388,31 +426,37 @@
              }
  
              provider.addAlgorithm("KeyGenerator.DESEDE", PREFIX + "$KeyGenerator");
@@ -5140,9 +5392,22 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/DE
  
              provider.addAlgorithm("SecretKeyFactory.PBEWITHSHAAND3-KEYTRIPLEDES-CBC", PREFIX + "$PBEWithSHAAndDES3KeyFactory");
              provider.addAlgorithm("SecretKeyFactory.PBEWITHSHAAND2-KEYTRIPLEDES-CBC", PREFIX + "$PBEWithSHAAndDES2KeyFactory");
+@@ -431,5 +475,12 @@
+             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.1.2.840.113549.1.12.1.4", "PKCS12PBE");
+             provider.addAlgorithm("Alg.Alias.Cipher.PBEWithSHAAnd3KeyTripleDES",  "PBEWITHSHAAND3-KEYTRIPLEDES-CBC");
+         }
++        // BEGIN android-added
++        private void addCipherImpl(ConfigurableProvider provider, String algorithm,
++                String implClass) {
++            provider.addAlgorithm("Cipher." + algorithm, implClass);
++            provider.addAlgorithm("Cipher." + algorithm + " SupportedKeyFormats", "RAW");
++        }
++        // END android-added
+     }
+ }
 diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/RC2.java bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/RC2.java
 --- bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/RC2.java	2014-07-26 04:17:24.000000000 +0000
-+++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/RC2.java	2013-05-25 02:14:15.000000000 +0000
++++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/RC2.java	2015-03-21 01:28:37.000000000 +0000
 @@ -12,24 +12,34 @@
  
  import org.bouncycastle.asn1.ASN1Primitive;
@@ -5905,6 +6170,37 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/RC
  
              provider.addAlgorithm("Alg.Alias.Cipher." + PKCSObjectIdentifiers.pbeWithMD5AndRC2_CBC, "PBEWITHMD5ANDRC2");
  
+@@ -507,11 +531,13 @@
+             provider.addAlgorithm("Alg.Alias.Cipher.1.2.840.113549.1.12.1.6", "PBEWITHSHAAND40BITRC2-CBC");
+             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA1AND128BITRC2-CBC", "PBEWITHSHAAND128BITRC2-CBC");
+             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA1AND40BITRC2-CBC", "PBEWITHSHAAND40BITRC2-CBC");
+-            provider.addAlgorithm("Cipher.PBEWITHSHA1ANDRC2", PREFIX + "$PBEWithSHA1AndRC2");
++            // BEGIN android-changed
++            addCipherImpl(provider, "PBEWITHSHA1ANDRC2", PREFIX + "$PBEWithSHA1AndRC2");
+ 
+-            provider.addAlgorithm("Cipher.PBEWITHSHAAND128BITRC2-CBC", PREFIX + "$PBEWithSHAAnd128BitRC2");
+-            provider.addAlgorithm("Cipher.PBEWITHSHAAND40BITRC2-CBC", PREFIX + "$PBEWithSHAAnd40BitRC2");
+-            provider.addAlgorithm("Cipher.PBEWITHMD5ANDRC2", PREFIX + "$PBEWithMD5AndRC2");
++            addCipherImpl(provider, "PBEWITHSHAAND128BITRC2-CBC", PREFIX + "$PBEWithSHAAnd128BitRC2");
++            addCipherImpl(provider, "PBEWITHSHAAND40BITRC2-CBC", PREFIX + "$PBEWithSHAAnd40BitRC2");
++            addCipherImpl(provider, "PBEWITHMD5ANDRC2", PREFIX + "$PBEWithMD5AndRC2");
++            // END android-changed
+ 
+             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHA1ANDRC2", "PKCS12PBE");
+             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAANDRC2", "PKCS12PBE");
+@@ -519,5 +545,12 @@
+             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAAND40BITRC2-CBC", "PKCS12PBE");
+             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAAND128BITRC2-CBC", "PKCS12PBE");
+         }
++        // BEGIN android-added
++        private void addCipherImpl(ConfigurableProvider provider, String algorithm,
++                String implClass) {
++            provider.addAlgorithm("Cipher." + algorithm, implClass);
++            provider.addAlgorithm("Cipher." + algorithm + " SupportedKeyFormats", "RAW");
++        }
++        // END android-added
+     }
+ }
 diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/SymmetricAlgorithmProvider.java bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/SymmetricAlgorithmProvider.java
 --- bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/SymmetricAlgorithmProvider.java	2014-07-26 04:17:24.000000000 +0000
 +++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/SymmetricAlgorithmProvider.java	2013-12-12 00:35:05.000000000 +0000
@@ -5966,7 +6262,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/Sy
  }
 diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/Twofish.java bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/Twofish.java
 --- bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/Twofish.java	2014-07-26 04:17:24.000000000 +0000
-+++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/Twofish.java	2013-12-12 00:35:05.000000000 +0000
++++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/symmetric/Twofish.java	2015-03-21 01:28:37.000000000 +0000
 @@ -1,18 +1,26 @@
  package org.bouncycastle.jcajce.provider.symmetric;
  
@@ -6137,7 +6433,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/Tw
  
      public static class Mappings
          extends SymmetricAlgorithmProvider
-@@ -116,17 +128,21 @@
+@@ -116,17 +128,24 @@
  
          public void configure(ConfigurableProvider provider)
          {
@@ -6152,7 +6448,10 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/Tw
  
              provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAANDTWOFISH", "PKCS12PBE");
              provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAANDTWOFISH-CBC", "PKCS12PBE");
++            // BEGIN android-changed
              provider.addAlgorithm("Cipher.PBEWITHSHAANDTWOFISH-CBC",  PREFIX + "$PBEWithSHA");
++            provider.addAlgorithm("Cipher.PBEWITHSHAANDTWOFISH-CBC SupportedKeyFormats",  "RAW");
++            // END android-changed
              provider.addAlgorithm("SecretKeyFactory.PBEWITHSHAANDTWOFISH-CBC", PREFIX + "$PBEWithSHAKeyFactory");
  
 -            addGMacAlgorithm(provider, "Twofish", PREFIX + "$GMAC", PREFIX + "$KeyGen");
@@ -6888,6 +7187,41 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/symmetric/ut
                  default:
                      throw new IllegalStateException("unknown digest scheme for PBE encryption.");
                  }
+diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/util/AsymmetricAlgorithmProvider.java bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/util/AsymmetricAlgorithmProvider.java
+--- bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/util/AsymmetricAlgorithmProvider.java	2014-07-26 04:17:24.000000000 +0000
++++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/util/AsymmetricAlgorithmProvider.java	2015-03-21 01:28:37.000000000 +0000
+@@ -11,7 +11,13 @@
+         String digest,
+         String algorithm,
+         String className,
+-        ASN1ObjectIdentifier oid)
++        // BEGIN android-changed
++        ASN1ObjectIdentifier oid,
++        // END android-changed
++        // BEGIN android-added
++        String supportedKeyClasses,
++        String supportedKeyFormats)
++        // END android-added
+     {
+         String mainName = digest + "WITH" + algorithm;
+         String jdk11Variation1 = digest + "with" + algorithm;
+@@ -19,6 +25,16 @@
+         String alias = digest + "/" + algorithm;
+ 
+         provider.addAlgorithm("Signature." + mainName, className);
++        // BEGIN android-added
++        if (supportedKeyClasses != null) {
++            provider.addAlgorithm("Signature." + mainName + " SupportedKeyClasses",
++                    supportedKeyClasses);
++        }
++        if (supportedKeyFormats != null) {
++            provider.addAlgorithm("Signature." + mainName + " SupportedKeyFormats",
++                    supportedKeyFormats);
++        }
++        // END android-added
+         provider.addAlgorithm("Alg.Alias.Signature." + jdk11Variation1, mainName);
+         provider.addAlgorithm("Alg.Alias.Signature." + jdk11Variation2, mainName);
+         provider.addAlgorithm("Alg.Alias.Signature." + alias, mainName);
 diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/util/DigestFactory.java bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/util/DigestFactory.java
 --- bcprov-jdk15on-151.orig/org/bouncycastle/jcajce/provider/util/DigestFactory.java	2014-07-26 04:17:24.000000000 +0000
 +++ bcprov-jdk15on-151/org/bouncycastle/jcajce/provider/util/DigestFactory.java	2013-09-26 18:06:21.000000000 +0000
@@ -8456,7 +8790,7 @@ diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jce/provider/PKIXCRLUtil.jav
  
 diff -Naur bcprov-jdk15on-151.orig/org/bouncycastle/jce/provider/PKIXCertPathValidatorSpi.java bcprov-jdk15on-151/org/bouncycastle/jce/provider/PKIXCertPathValidatorSpi.java
 --- bcprov-jdk15on-151.orig/org/bouncycastle/jce/provider/PKIXCertPathValidatorSpi.java	2014-07-26 04:17:24.000000000 +0000
-+++ bcprov-jdk15on-151/org/bouncycastle/jce/provider/PKIXCertPathValidatorSpi.java	2014-07-28 19:51:54.000000000 +0000
++++ bcprov-jdk15on-151/org/bouncycastle/jce/provider/PKIXCertPathValidatorSpi.java	2014-05-05 17:28:58.000000000 +0000
 @@ -1,5 +1,8 @@
  package org.bouncycastle.jce.provider;
  

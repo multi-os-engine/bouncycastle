@@ -11,7 +11,13 @@ public abstract class AsymmetricAlgorithmProvider
         String digest,
         String algorithm,
         String className,
-        ASN1ObjectIdentifier oid)
+        // BEGIN android-changed
+        ASN1ObjectIdentifier oid,
+        // END android-changed
+        // BEGIN android-added
+        String supportedKeyClasses,
+        String supportedKeyFormats)
+        // END android-added
     {
         String mainName = digest + "WITH" + algorithm;
         String jdk11Variation1 = digest + "with" + algorithm;
@@ -19,6 +25,16 @@ public abstract class AsymmetricAlgorithmProvider
         String alias = digest + "/" + algorithm;
 
         provider.addAlgorithm("Signature." + mainName, className);
+        // BEGIN android-added
+        if (supportedKeyClasses != null) {
+            provider.addAlgorithm("Signature." + mainName + " SupportedKeyClasses",
+                    supportedKeyClasses);
+        }
+        if (supportedKeyFormats != null) {
+            provider.addAlgorithm("Signature." + mainName + " SupportedKeyFormats",
+                    supportedKeyFormats);
+        }
+        // END android-added
         provider.addAlgorithm("Alg.Alias.Signature." + jdk11Variation1, mainName);
         provider.addAlgorithm("Alg.Alias.Signature." + jdk11Variation2, mainName);
         provider.addAlgorithm("Alg.Alias.Signature." + alias, mainName);

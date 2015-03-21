@@ -380,12 +380,14 @@ public final class DESede
 
         public void configure(ConfigurableProvider provider)
         {
-            provider.addAlgorithm("Cipher.DESEDE", PREFIX + "$ECB");
+            // BEGIN android-changed
+            addCipherImpl(provider, "DESEDE", PREFIX + "$ECB");
+            // END android-changed
             // BEGIN android-removed
             // provider.addAlgorithm("Cipher." + PKCSObjectIdentifiers.des_EDE3_CBC, PREFIX + "$CBC");
             // END android-removed
-            provider.addAlgorithm("Cipher.DESEDEWRAP", PREFIX + "$Wrap");
             // BEGIN android-changed
+            addCipherImpl(provider, "DESEDEWRAP", PREFIX + "$Wrap");
             provider.addAlgorithm("Alg.Alias.Cipher." + PKCSObjectIdentifiers.id_alg_CMS3DESwrap, "DESEDEWRAP");
             // END android-changed
             // BEGIN android-removed
@@ -403,12 +405,16 @@ public final class DESede
 
             if (provider.hasAlgorithm("MessageDigest", "SHA-1"))
             {
-                provider.addAlgorithm("Cipher.PBEWITHSHAAND3-KEYTRIPLEDES-CBC", PREFIX + "$PBEWithSHAAndDES3Key");
+                // BEGIN android-changed
+                addCipherImpl(provider, "PBEWITHSHAAND3-KEYTRIPLEDES-CBC", PREFIX + "$PBEWithSHAAndDES3Key");
+                // END android-changed
                 // BEGIN android-removed
                 // provider.addAlgorithm("Cipher.BROKENPBEWITHSHAAND3-KEYTRIPLEDES-CBC", PREFIX + "$BrokePBEWithSHAAndDES3Key");
                 // provider.addAlgorithm("Cipher.OLDPBEWITHSHAAND3-KEYTRIPLEDES-CBC", PREFIX + "$OldPBEWithSHAAndDES3Key");
                 // END android-removed
-                provider.addAlgorithm("Cipher.PBEWITHSHAAND2-KEYTRIPLEDES-CBC", PREFIX + "$PBEWithSHAAndDES2Key");
+                // BEGIN android-changed
+                addCipherImpl(provider, "PBEWITHSHAAND2-KEYTRIPLEDES-CBC", PREFIX + "$PBEWithSHAAndDES2Key");
+                // END android-changed
                 // BEGIN android-removed
                 // provider.addAlgorithm("Cipher.BROKENPBEWITHSHAAND2-KEYTRIPLEDES-CBC", PREFIX + "$BrokePBEWithSHAAndDES2Key");
                 // END android-removed
@@ -469,5 +475,12 @@ public final class DESede
             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.1.2.840.113549.1.12.1.4", "PKCS12PBE");
             provider.addAlgorithm("Alg.Alias.Cipher.PBEWithSHAAnd3KeyTripleDES",  "PBEWITHSHAAND3-KEYTRIPLEDES-CBC");
         }
+        // BEGIN android-added
+        private void addCipherImpl(ConfigurableProvider provider, String algorithm,
+                String implClass) {
+            provider.addAlgorithm("Cipher." + algorithm, implClass);
+            provider.addAlgorithm("Cipher." + algorithm + " SupportedKeyFormats", "RAW");
+        }
+        // END android-added
     }
 }

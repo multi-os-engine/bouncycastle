@@ -23,6 +23,10 @@ public class DH
             provider.addAlgorithm("Alg.Alias.KeyPairGenerator.DIFFIEHELLMAN", "DH");
 
             provider.addAlgorithm("KeyAgreement.DH", PREFIX + "KeyAgreementSpi");
+            // BEGIN android-added
+            provider.addAlgorithm("KeyAgreement.DH SupportedKeyClasses",
+                    "javax.crypto.interfaces.DHPrivateKey");
+            // END android-added
             provider.addAlgorithm("Alg.Alias.KeyAgreement.DIFFIEHELLMAN", "DH");
 
             provider.addAlgorithm("KeyFactory.DH", PREFIX + "KeyFactorySpi");

@@ -531,11 +531,13 @@ public final class RC2
             provider.addAlgorithm("Alg.Alias.Cipher.1.2.840.113549.1.12.1.6", "PBEWITHSHAAND40BITRC2-CBC");
             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA1AND128BITRC2-CBC", "PBEWITHSHAAND128BITRC2-CBC");
             provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA1AND40BITRC2-CBC", "PBEWITHSHAAND40BITRC2-CBC");
-            provider.addAlgorithm("Cipher.PBEWITHSHA1ANDRC2", PREFIX + "$PBEWithSHA1AndRC2");
+            // BEGIN android-changed
+            addCipherImpl(provider, "PBEWITHSHA1ANDRC2", PREFIX + "$PBEWithSHA1AndRC2");
 
-            provider.addAlgorithm("Cipher.PBEWITHSHAAND128BITRC2-CBC", PREFIX + "$PBEWithSHAAnd128BitRC2");
-            provider.addAlgorithm("Cipher.PBEWITHSHAAND40BITRC2-CBC", PREFIX + "$PBEWithSHAAnd40BitRC2");
-            provider.addAlgorithm("Cipher.PBEWITHMD5ANDRC2", PREFIX + "$PBEWithMD5AndRC2");
+            addCipherImpl(provider, "PBEWITHSHAAND128BITRC2-CBC", PREFIX + "$PBEWithSHAAnd128BitRC2");
+            addCipherImpl(provider, "PBEWITHSHAAND40BITRC2-CBC", PREFIX + "$PBEWithSHAAnd40BitRC2");
+            addCipherImpl(provider, "PBEWITHMD5ANDRC2", PREFIX + "$PBEWithMD5AndRC2");
+            // END android-changed
 
             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHA1ANDRC2", "PKCS12PBE");
             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAANDRC2", "PKCS12PBE");
@@ -543,5 +545,12 @@ public final class RC2
             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAAND40BITRC2-CBC", "PKCS12PBE");
             provider.addAlgorithm("Alg.Alias.AlgorithmParameters.PBEWITHSHAAND128BITRC2-CBC", "PKCS12PBE");
         }
+        // BEGIN android-added
+        private void addCipherImpl(ConfigurableProvider provider, String algorithm,
+                String implClass) {
+            provider.addAlgorithm("Cipher." + algorithm, implClass);
+            provider.addAlgorithm("Cipher." + algorithm + " SupportedKeyFormats", "RAW");
+        }
+        // END android-added
     }
 }
