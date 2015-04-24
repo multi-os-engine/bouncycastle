@@ -81,10 +81,20 @@ public class PKIXCertPathValidatorSpi
         {
             paramsPKIX = ((PKIXExtendedBuilderParameters)params).getBaseParameters();
         }
-        else
+        // BEGIN android-removed
+        // else
+        // END android-removed
+        // BEGIN android-added
+        else if (params instanceof PKIXExtendedParameters)
+        // END android-added
         {
-            paramsPKIX = (PKIXExtendedParameters)params;
+            paramsPKIX = (PKIXExtendedParameters) params;
         }
+        // BEGIN android-added
+        else {
+            throw new InvalidAlgorithmParameterException("Expecting PKIX algorithm parameters");
+        }
+        // END android-added
 
         if (paramsPKIX.getTrustAnchors() == null)
         {
