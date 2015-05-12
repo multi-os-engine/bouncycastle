@@ -1,1 +1,1 @@
-rule org.bouncycastle.** com.android.@0
+rule org.bouncycastle.** avoidopenssl.com.android.@0

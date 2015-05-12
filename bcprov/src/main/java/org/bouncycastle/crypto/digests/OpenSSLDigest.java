@@ -32,7 +32,7 @@ public class OpenSSLDigest implements ExtendedDigest {
 
     public OpenSSLDigest(String algorithm, int byteSize) {
         try {
-            delegate = MessageDigest.getInstance(algorithm, "AndroidOpenSSL");
+            delegate = MessageDigest.getInstance(algorithm, "BC-minimumpatch");
             this.byteSize = byteSize;
         } catch (Exception e) {
             throw new RuntimeException(e);
