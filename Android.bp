@@ -18,14 +18,14 @@
 all_bcprov_src_files = ["bcprov/src/main/java/**/*.java"]
 
 // used for bouncycastle for target where we want to be sure to use OpenSSLDigest
-android_bcprov_src_files = all_bcprov_src_files + [
-    "-bcprov/src/main/java/org/bouncycastle/crypto/digests/AndroidDigestFactoryBouncyCastle.java"
+android_bcprov_exclude_src_files = [
+    "bcprov/src/main/java/org/bouncycastle/crypto/digests/AndroidDigestFactoryBouncyCastle.java"
 ]
 
 // used for bouncycastle-host where we can't use OpenSSLDigest
-ri_bcprov_src_files = all_bcprov_src_files + [
-    "-bcprov/src/main/java/org/bouncycastle/crypto/digests/AndroidDigestFactoryOpenSSL.java",
-    "-bcprov/src/main/java/org/bouncycastle/crypto/digests/OpenSSLDigest.java",
+ri_bcprov_exclude_src_files = [
+    "bcprov/src/main/java/org/bouncycastle/crypto/digests/AndroidDigestFactoryOpenSSL.java",
+    "bcprov/src/main/java/org/bouncycastle/crypto/digests/OpenSSLDigest.java",
 ]
 
 // These cannot build in the PDK, because the PDK requires all libraries
@@ -35,7 +35,8 @@ ri_bcprov_src_files = all_bcprov_src_files + [
 // ifneq ($(TARGET_BUILD_PDK),true)
 java_library {
     name: "bouncycastle",
-    srcs: android_bcprov_src_files,
+    srcs: all_bcprov_src_files,
+    exclude_srcs: android_bcprov_exclude_src_files,
     java_libs: ["conscrypt"],
     no_standard_libraries: true,
     jarjar_rules: "jarjar-rules.txt",
@@ -53,7 +54,8 @@ java_library {
 // non-jarjar version to build okhttp-tests
 java_library_static {
     name: "bouncycastle-nojarjar",
-    srcs: android_bcprov_src_files,
+    srcs: all_bcprov_src_files,
+    exclude_srcs: android_bcprov_exclude_src_files,
     java_libs: [
         "core-libart",
         "conscrypt",
@@ -66,7 +68,8 @@ java_library_static {
 java_library_static {
     name: "bouncycastle-unbundled",
     sdk_version: "9",
-    srcs: ri_bcprov_src_files,
+    srcs: all_bcprov_src_files,
+    exclude_srcs: ri_bcprov_exclude_src_files,
 
 }
 
@@ -125,7 +128,8 @@ java_library_static {
 // endif
 java_library_host {
     name: "bouncycastle-host",
-    srcs: ri_bcprov_src_files,
+    srcs: all_bcprov_src_files,
+    exclude_srcs: ri_bcprov_exclude_src_files,
 }
 
 java_library_host {
