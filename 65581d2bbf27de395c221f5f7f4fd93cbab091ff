@@ -1,0 +1,9 @@
+Code-Review+1: Narayan Kamath <narayan@google.com>
+Code-Review+1: Sergio Giro <sgiro@google.com>
+Code-Review+2: Kenny Root <kroot@google.com>
+Verified+1: Kenny Root <kroot@google.com>
+Submitted-by: Kenny Root <kroot@google.com>
+Submitted-at: Thu, 23 Jul 2015 15:23:52 +0000
+Reviewed-on: https://android-review.googlesource.com/160943
+Project: platform/external/bouncycastle
+Branch: refs/heads/master
