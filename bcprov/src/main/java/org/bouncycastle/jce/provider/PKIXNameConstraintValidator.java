@@ -1052,6 +1052,11 @@ public class PKIXNameConstraintValidator
                 {
                     String _permitted = (String)_iter.next();
 
+                    // BEGIN android-added
+                    if (dns != null && dns.equalsIgnoreCase(_permitted)) {
+                        intersect.add(dns);
+                    } else
+                    // END android-added
                     if (withinDomain(_permitted, dns))
                     {
                         intersect.add(_permitted);

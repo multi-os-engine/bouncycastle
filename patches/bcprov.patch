@@ -8639,6 +8639,21 @@ diff -Naur bcprov-jdk15on-152.orig/org/bouncycastle/jce/provider/PKIXCertPathVal
              // try
              // {
              //
+diff -Naur bcprov-jdk15on-152.orig/org/bouncycastle/jce/provider/PKIXNameConstraintValidator.java bcprov-jdk15on-152/org/bouncycastle/jce/provider/PKIXNameConstraintValidator.java
+--- bcprov-jdk15on-152.orig/org/bouncycastle/jce/provider/PKIXNameConstraintValidator.java	2015-03-01 12:03:02.000000000 +0000
++++ bcprov-jdk15on-152/org/bouncycastle/jce/provider/PKIXNameConstraintValidator.java	2015-09-28 20:30:54.000000000 +0000
+@@ -1052,6 +1052,11 @@
+                 {
+                     String _permitted = (String)_iter.next();
+ 
++                    // BEGIN android-added
++                    if (dns != null && dns.equalsIgnoreCase(_permitted)) {
++                        intersect.add(dns);
++                    } else
++                    // END android-added
+                     if (withinDomain(_permitted, dns))
+                     {
+                         intersect.add(_permitted);
 diff -Naur bcprov-jdk15on-152.orig/org/bouncycastle/jce/provider/X509CertificateObject.java bcprov-jdk15on-152/org/bouncycastle/jce/provider/X509CertificateObject.java
 --- bcprov-jdk15on-152.orig/org/bouncycastle/jce/provider/X509CertificateObject.java	2015-03-01 12:03:02.000000000 +0000
 +++ bcprov-jdk15on-152/org/bouncycastle/jce/provider/X509CertificateObject.java	2013-01-31 02:26:40.000000000 +0000
