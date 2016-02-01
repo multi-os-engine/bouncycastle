@@ -255,6 +255,7 @@ public class X509Name
      */
     public static final Hashtable SymbolLookUp = DefaultLookUp;
 
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
     // BEGIN android-changed
     private static final Boolean TRUE = Boolean.TRUE;
     private static final Boolean FALSE = Boolean.FALSE;
@@ -451,6 +452,200 @@ public class X509Name
                    // BEGIN android-changed
                    added.addElement(Boolean.valueOf(i != 0));
                    // END android-changed
+=======
+    private static final Boolean TRUE = new Boolean(true); // for J2ME compatibility
+    private static final Boolean FALSE = new Boolean(false);
+
+    static
+    {
+        DefaultSymbols.put(C, "C");
+        DefaultSymbols.put(O, "O");
+        DefaultSymbols.put(T, "T");
+        DefaultSymbols.put(OU, "OU");
+        DefaultSymbols.put(CN, "CN");
+        DefaultSymbols.put(L, "L");
+        DefaultSymbols.put(ST, "ST");
+        DefaultSymbols.put(SN, "SERIALNUMBER");
+        DefaultSymbols.put(EmailAddress, "E");
+        DefaultSymbols.put(DC, "DC");
+        DefaultSymbols.put(UID, "UID");
+        DefaultSymbols.put(STREET, "STREET");
+        DefaultSymbols.put(SURNAME, "SURNAME");
+        DefaultSymbols.put(GIVENNAME, "GIVENNAME");
+        DefaultSymbols.put(INITIALS, "INITIALS");
+        DefaultSymbols.put(GENERATION, "GENERATION");
+        DefaultSymbols.put(UnstructuredAddress, "unstructuredAddress");
+        DefaultSymbols.put(UnstructuredName, "unstructuredName");
+        DefaultSymbols.put(UNIQUE_IDENTIFIER, "UniqueIdentifier");
+        DefaultSymbols.put(DN_QUALIFIER, "DN");
+        DefaultSymbols.put(PSEUDONYM, "Pseudonym");
+        DefaultSymbols.put(POSTAL_ADDRESS, "PostalAddress");
+        DefaultSymbols.put(NAME_AT_BIRTH, "NameAtBirth");
+        DefaultSymbols.put(COUNTRY_OF_CITIZENSHIP, "CountryOfCitizenship");
+        DefaultSymbols.put(COUNTRY_OF_RESIDENCE, "CountryOfResidence");
+        DefaultSymbols.put(GENDER, "Gender");
+        DefaultSymbols.put(PLACE_OF_BIRTH, "PlaceOfBirth");
+        DefaultSymbols.put(DATE_OF_BIRTH, "DateOfBirth");
+        DefaultSymbols.put(POSTAL_CODE, "PostalCode");
+        DefaultSymbols.put(BUSINESS_CATEGORY, "BusinessCategory");
+        DefaultSymbols.put(TELEPHONE_NUMBER, "TelephoneNumber");
+        DefaultSymbols.put(NAME, "Name");
+
+        RFC2253Symbols.put(C, "C");
+        RFC2253Symbols.put(O, "O");
+        RFC2253Symbols.put(OU, "OU");
+        RFC2253Symbols.put(CN, "CN");
+        RFC2253Symbols.put(L, "L");
+        RFC2253Symbols.put(ST, "ST");
+        RFC2253Symbols.put(STREET, "STREET");
+        RFC2253Symbols.put(DC, "DC");
+        RFC2253Symbols.put(UID, "UID");
+
+        RFC1779Symbols.put(C, "C");
+        RFC1779Symbols.put(O, "O");
+        RFC1779Symbols.put(OU, "OU");
+        RFC1779Symbols.put(CN, "CN");
+        RFC1779Symbols.put(L, "L");
+        RFC1779Symbols.put(ST, "ST");
+        RFC1779Symbols.put(STREET, "STREET");
+
+        DefaultLookUp.put("c", C);
+        DefaultLookUp.put("o", O);
+        DefaultLookUp.put("t", T);
+        DefaultLookUp.put("ou", OU);
+        DefaultLookUp.put("cn", CN);
+        DefaultLookUp.put("l", L);
+        DefaultLookUp.put("st", ST);
+        DefaultLookUp.put("sn", SN);
+        DefaultLookUp.put("serialnumber", SN);
+        DefaultLookUp.put("street", STREET);
+        DefaultLookUp.put("emailaddress", E);
+        DefaultLookUp.put("dc", DC);
+        DefaultLookUp.put("e", E);
+        DefaultLookUp.put("uid", UID);
+        DefaultLookUp.put("surname", SURNAME);
+        DefaultLookUp.put("givenname", GIVENNAME);
+        DefaultLookUp.put("initials", INITIALS);
+        DefaultLookUp.put("generation", GENERATION);
+        DefaultLookUp.put("unstructuredaddress", UnstructuredAddress);
+        DefaultLookUp.put("unstructuredname", UnstructuredName);
+        DefaultLookUp.put("uniqueidentifier", UNIQUE_IDENTIFIER);
+        DefaultLookUp.put("dn", DN_QUALIFIER);
+        DefaultLookUp.put("pseudonym", PSEUDONYM);
+        DefaultLookUp.put("postaladdress", POSTAL_ADDRESS);
+        DefaultLookUp.put("nameofbirth", NAME_AT_BIRTH);
+        DefaultLookUp.put("countryofcitizenship", COUNTRY_OF_CITIZENSHIP);
+        DefaultLookUp.put("countryofresidence", COUNTRY_OF_RESIDENCE);
+        DefaultLookUp.put("gender", GENDER);
+        DefaultLookUp.put("placeofbirth", PLACE_OF_BIRTH);
+        DefaultLookUp.put("dateofbirth", DATE_OF_BIRTH);
+        DefaultLookUp.put("postalcode", POSTAL_CODE);
+        DefaultLookUp.put("businesscategory", BUSINESS_CATEGORY);
+        DefaultLookUp.put("telephonenumber", TELEPHONE_NUMBER);
+        DefaultLookUp.put("name", NAME);
+    }
+
+    private X509NameEntryConverter  converter = null;
+    private Vector                  ordering = new Vector();
+    private Vector                  values = new Vector();
+    private Vector                  added = new Vector();
+
+    private ASN1Sequence            seq;
+
+    private boolean                 isHashCodeCalculated;
+    private int                     hashCodeValue;
+
+    /**
+     * Return a X509Name based on the passed in tagged object.
+     * 
+     * @param obj tag object holding name.
+     * @param explicit true if explicitly tagged false otherwise.
+     * @return the X509Name
+     */
+    public static X509Name getInstance(
+        ASN1TaggedObject obj,
+        boolean          explicit)
+    {
+        return getInstance(ASN1Sequence.getInstance(obj, explicit));
+    }
+
+    public static X509Name getInstance(
+        Object  obj)
+    {
+        if (obj == null || obj instanceof X509Name)
+        {
+            return (X509Name)obj;
+        }
+        else if (obj instanceof X500Name)
+        {
+            return new X509Name(ASN1Sequence.getInstance(((X500Name)obj).toASN1Primitive()));
+        }
+        else if (obj != null)
+        {
+            return new X509Name(ASN1Sequence.getInstance(obj));
+        }
+
+        return null;
+    }
+
+    protected X509Name()
+    {
+        // constructure use by new X500 Name class
+    }
+    /**
+     * Constructor from ASN1Sequence
+     *
+     * the principal will be a list of constructed sets, each containing an (OID, String) pair.
+     * @deprecated use X500Name.getInstance()
+     */
+    public X509Name(
+        ASN1Sequence  seq)
+    {
+        this.seq = seq;
+
+        Enumeration e = seq.getObjects();
+
+        while (e.hasMoreElements())
+        {
+            ASN1Set         set = ASN1Set.getInstance(((ASN1Encodable)e.nextElement()).toASN1Primitive());
+
+            for (int i = 0; i < set.size(); i++) 
+            {
+                   ASN1Sequence s = ASN1Sequence.getInstance(set.getObjectAt(i).toASN1Primitive());
+
+                   if (s.size() != 2)
+                   {
+                       throw new IllegalArgumentException("badly sized pair");
+                   }
+
+                   ordering.addElement(ASN1ObjectIdentifier.getInstance(s.getObjectAt(0)));
+                   
+                   ASN1Encodable value = s.getObjectAt(1);
+                   if (value instanceof ASN1String && !(value instanceof DERUniversalString))
+                   {
+                       String v = ((ASN1String)value).getString();
+                       if (v.length() > 0 && v.charAt(0) == '#')
+                       {
+                           values.addElement("\\" + v);
+                       }
+                       else
+                       {
+                           values.addElement(v);
+                       }
+                   }
+                   else
+                   {
+                       try
+                       {
+                           values.addElement("#" + bytesToString(Hex.encode(value.toASN1Primitive().getEncoded(ASN1Encoding.DER))));
+                       }
+                       catch (IOException e1)
+                       {
+                           throw new IllegalArgumentException("cannot encode value");
+                       }
+                   }
+                   added.addElement((i != 0) ? TRUE : FALSE);  // to allow earlier JDK compatibility
+>>>>>>> BRANCH (6d876f Merge "Update elements in android tree as in aosp and goog T)
             }
         }
     }

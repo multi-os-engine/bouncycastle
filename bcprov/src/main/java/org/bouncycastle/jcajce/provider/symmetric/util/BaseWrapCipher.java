@@ -24,6 +24,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.ShortBufferException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEParameterSpec;
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
 // BEGIN android-removed
 // import javax.crypto.spec.RC2ParameterSpec;
 // import javax.crypto.spec.RC5ParameterSpec;
@@ -293,6 +294,270 @@ public abstract class BaseWrapCipher
         return 0;
     }
     // END android-changed
+=======
+import javax.crypto.spec.RC2ParameterSpec;
+import javax.crypto.spec.RC5ParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.crypto.CipherParameters;
+import org.bouncycastle.crypto.InvalidCipherTextException;
+import org.bouncycastle.crypto.Wrapper;
+import org.bouncycastle.crypto.params.KeyParameter;
+import org.bouncycastle.crypto.params.ParametersWithIV;
+import org.bouncycastle.crypto.params.ParametersWithRandom;
+import org.bouncycastle.jcajce.util.BCJcaJceHelper;
+import org.bouncycastle.jcajce.util.JcaJceHelper;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+public abstract class BaseWrapCipher
+    extends CipherSpi
+    implements PBE
+{
+    //
+    // specs we can handle.
+    //
+    private Class[]                 availableSpecs =
+                                    {
+                                        IvParameterSpec.class,
+                                        PBEParameterSpec.class,
+                                        RC2ParameterSpec.class,
+                                        RC5ParameterSpec.class
+                                    };
+
+    protected int                     pbeType = PKCS12;
+    protected int                     pbeHash = SHA1;
+    protected int                     pbeKeySize;
+    protected int                     pbeIvSize;
+
+    protected AlgorithmParameters     engineParams = null;
+
+    protected Wrapper                 wrapEngine = null;
+
+    private int                       ivSize;
+    private byte[]                    iv;
+
+    private final JcaJceHelper helper = new BCJcaJceHelper();
+
+    protected BaseWrapCipher()
+    {
+    }
+
+    protected BaseWrapCipher(
+        Wrapper wrapEngine)
+    {
+        this(wrapEngine, 0);
+    }
+
+    protected BaseWrapCipher(
+        Wrapper wrapEngine,
+        int ivSize)
+    {
+        this.wrapEngine = wrapEngine;
+        this.ivSize = ivSize;
+    }
+
+    protected int engineGetBlockSize()
+    {
+        return 0;
+    }
+
+    protected byte[] engineGetIV()
+    {
+        return (byte[])iv.clone();
+    }
+
+    protected int engineGetKeySize(
+        Key     key)
+    {
+        return key.getEncoded().length;
+    }
+
+    protected int engineGetOutputSize(
+        int     inputLen)
+    {
+        return -1;
+    }
+
+    protected AlgorithmParameters engineGetParameters()
+    {
+        return null;
+    }
+
+    protected final AlgorithmParameters createParametersInstance(String algorithm)
+        throws NoSuchAlgorithmException, NoSuchProviderException
+    {
+        return helper.createAlgorithmParameters(algorithm);
+    }
+
+    protected void engineSetMode(
+        String  mode)
+        throws NoSuchAlgorithmException
+    {
+        throw new NoSuchAlgorithmException("can't support mode " + mode);
+    }
+
+    protected void engineSetPadding(
+        String  padding)
+    throws NoSuchPaddingException
+    {
+        throw new NoSuchPaddingException("Padding " + padding + " unknown.");
+    }
+
+    protected void engineInit(
+        int                     opmode,
+        Key                     key,
+        AlgorithmParameterSpec  params,
+        SecureRandom            random)
+    throws InvalidKeyException, InvalidAlgorithmParameterException
+    {
+        CipherParameters        param;
+
+        if (key instanceof BCPBEKey)
+        {
+            BCPBEKey k = (BCPBEKey)key;
+
+            if (params instanceof PBEParameterSpec)
+            {
+                param = PBE.Util.makePBEParameters(k, params, wrapEngine.getAlgorithmName());
+            }
+            else if (k.getParam() != null)
+            {
+                param = k.getParam();
+            }
+            else
+            {
+                throw new InvalidAlgorithmParameterException("PBE requires PBE parameters to be set.");
+            }
+        }
+        else
+        {
+            param = new KeyParameter(key.getEncoded());
+        }
+
+        if (params instanceof IvParameterSpec)
+        {
+            IvParameterSpec iv = (IvParameterSpec) params;
+            param = new ParametersWithIV(param, iv.getIV());
+        }
+
+        if (param instanceof KeyParameter && ivSize != 0)
+        {
+            iv = new byte[ivSize];
+            random.nextBytes(iv);
+            param = new ParametersWithIV(param, iv);
+        }
+
+        if (random != null)
+        {
+            param = new ParametersWithRandom(param, random);
+        }
+
+        switch (opmode)
+        {
+        case Cipher.WRAP_MODE:
+            wrapEngine.init(true, param);
+            break;
+        case Cipher.UNWRAP_MODE:
+            wrapEngine.init(false, param);
+            break;
+        case Cipher.ENCRYPT_MODE:
+        case Cipher.DECRYPT_MODE:
+            throw new IllegalArgumentException("engine only valid for wrapping");
+        default:
+            System.out.println("eeek!");
+        }
+    }
+
+    protected void engineInit(
+        int                 opmode,
+        Key                 key,
+        AlgorithmParameters params,
+        SecureRandom        random)
+    throws InvalidKeyException, InvalidAlgorithmParameterException
+    {
+        AlgorithmParameterSpec  paramSpec = null;
+
+        if (params != null)
+        {
+            for (int i = 0; i != availableSpecs.length; i++)
+            {
+                try
+                {
+                    paramSpec = params.getParameterSpec(availableSpecs[i]);
+                    break;
+                }
+                catch (Exception e)
+                {
+                    // try next spec
+                }
+            }
+
+            if (paramSpec == null)
+            {
+                throw new InvalidAlgorithmParameterException("can't handle parameter " + params.toString());
+            }
+        }
+
+        engineParams = params;
+        engineInit(opmode, key, paramSpec, random);
+    }
+
+    protected void engineInit(
+        int                 opmode,
+        Key                 key,
+        SecureRandom        random)
+        throws InvalidKeyException
+    {
+        try
+        {
+            engineInit(opmode, key, (AlgorithmParameterSpec)null, random);
+        }
+        catch (InvalidAlgorithmParameterException e)
+        {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    protected byte[] engineUpdate(
+        byte[]  input,
+        int     inputOffset,
+        int     inputLen)
+    {
+        throw new RuntimeException("not supported for wrapping");
+    }
+
+    protected int engineUpdate(
+        byte[]  input,
+        int     inputOffset,
+        int     inputLen,
+        byte[]  output,
+        int     outputOffset)
+        throws ShortBufferException
+    {
+        throw new RuntimeException("not supported for wrapping");
+    }
+
+    protected byte[] engineDoFinal(
+        byte[]  input,
+        int     inputOffset,
+        int     inputLen)
+        throws IllegalBlockSizeException, BadPaddingException
+    {
+        return null;
+    }
+
+    protected int engineDoFinal(
+        byte[]  input,
+        int     inputOffset,
+        int     inputLen,
+        byte[]  output,
+        int     outputOffset)
+        throws IllegalBlockSizeException, BadPaddingException, ShortBufferException
+    {
+        return 0;
+    }
+>>>>>>> BRANCH (6d876f Merge "Update elements in android tree as in aosp and goog T)
 
     protected byte[] engineWrap(
         Key     key)

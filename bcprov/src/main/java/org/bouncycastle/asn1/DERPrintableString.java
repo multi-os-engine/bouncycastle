@@ -12,9 +12,13 @@ public class DERPrintableString
     extends ASN1Primitive
     implements ASN1String
 {
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
     // BEGIN android-changed
     private final byte[]  string;
     // END android-changed
+=======
+    private byte[]  string;
+>>>>>>> BRANCH (6d876f Merge "Update elements in android tree as in aosp and goog T)
 
     /**
      * return a printable string from the passed in object.

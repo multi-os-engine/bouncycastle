@@ -64,9 +64,13 @@ public final class Blowfish
         {
 
             provider.addAlgorithm("Cipher.BLOWFISH", PREFIX + "$ECB");
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
             // BEGIN android-removed
             // provider.addAlgorithm("Cipher.1.3.6.1.4.1.3029.1.2", PREFIX + "$CBC");
             // END android-removed
+=======
+            provider.addAlgorithm("Cipher.1.3.6.1.4.1.3029.1.2", PREFIX + "$CBC");
+>>>>>>> BRANCH (6d876f Merge "Update elements in android tree as in aosp and goog T)
             provider.addAlgorithm("KeyGenerator.BLOWFISH", PREFIX + "$KeyGen");
             provider.addAlgorithm("Alg.Alias.KeyGenerator.1.3.6.1.4.1.3029.1.2", "BLOWFISH");
             provider.addAlgorithm("AlgorithmParameters.BLOWFISH", PREFIX + "$AlgParams");

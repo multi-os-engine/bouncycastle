@@ -18,6 +18,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEParameterSpec;
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
 // BEGIN android-removed
 // import javax.crypto.spec.RC2ParameterSpec;
 // import javax.crypto.spec.RC5ParameterSpec;
@@ -45,6 +46,31 @@ public abstract class BaseCipherSpi
                                         // RC2ParameterSpec.class,
                                         // RC5ParameterSpec.class
                                         // END android-removed
+=======
+import javax.crypto.spec.RC2ParameterSpec;
+import javax.crypto.spec.RC5ParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.crypto.InvalidCipherTextException;
+import org.bouncycastle.crypto.Wrapper;
+import org.bouncycastle.jcajce.util.BCJcaJceHelper;
+import org.bouncycastle.jcajce.util.JcaJceHelper;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+public abstract class BaseCipherSpi
+    extends CipherSpi
+{
+    //
+    // specs we can handle.
+    //
+    private Class[]                 availableSpecs =
+                                    {
+                                        IvParameterSpec.class,
+                                        PBEParameterSpec.class,
+                                        RC2ParameterSpec.class,
+                                        RC5ParameterSpec.class
+>>>>>>> BRANCH (6d876f Merge "Update elements in android tree as in aosp and goog T)
                                     };
 
     private final JcaJceHelper helper = new BCJcaJceHelper();
