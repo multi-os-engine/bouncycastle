@@ -45,6 +45,7 @@ public class SHA256
         }
     }
 
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
     // BEGIN android-removed
     // /**
     //  * PBEWithHmacSHA
@@ -91,6 +92,50 @@ public class SHA256
             // provider.addAlgorithm("Alg.Alias.SecretKeyFactory.PBEWITHHMACSHA-256", "PBEWITHHMACSHA256");
             // provider.addAlgorithm("Alg.Alias.SecretKeyFactory." + NISTObjectIdentifiers.id_sha256, "PBEWITHHMACSHA256");
             // END android-removed
+=======
+    /**
+     * PBEWithHmacSHA
+     */
+    public static class PBEWithMacKeyFactory
+        extends PBESecretKeyFactory
+    {
+        public PBEWithMacKeyFactory()
+        {
+            super("PBEwithHmacSHA256", null, false, PKCS12, SHA256, 256, 0);
+        }
+    }
+
+    /**
+     * HMACSHA256
+     */
+    public static class KeyGenerator
+        extends BaseKeyGenerator
+    {
+        public KeyGenerator()
+        {
+            super("HMACSHA256", 256, new CipherKeyGenerator());
+        }
+    }
+
+    public static class Mappings
+        extends DigestAlgorithmProvider
+    {
+        private static final String PREFIX = SHA256.class.getName();
+
+        public Mappings()
+        {
+        }
+
+        public void configure(ConfigurableProvider provider)
+        {
+            provider.addAlgorithm("MessageDigest.SHA-256", PREFIX + "$Digest");
+            provider.addAlgorithm("Alg.Alias.MessageDigest.SHA256", "SHA-256");
+            provider.addAlgorithm("Alg.Alias.MessageDigest." + NISTObjectIdentifiers.id_sha256, "SHA-256");
+
+            provider.addAlgorithm("SecretKeyFactory.PBEWITHHMACSHA256", PREFIX + "$PBEWithMacKeyFactory");
+            provider.addAlgorithm("Alg.Alias.SecretKeyFactory.PBEWITHHMACSHA-256", "PBEWITHHMACSHA256");
+            provider.addAlgorithm("Alg.Alias.SecretKeyFactory." + NISTObjectIdentifiers.id_sha256, "PBEWITHHMACSHA256");
+>>>>>>> BRANCH (7cff05 Merge "bouncycastle: Android tree with upstream code for ver)
 
             addHMACAlgorithm(provider, "SHA256", PREFIX + "$HashMac",  PREFIX + "$KeyGenerator");
             addHMACAlias(provider, "SHA256", PKCSObjectIdentifiers.id_hmacWithSHA256);

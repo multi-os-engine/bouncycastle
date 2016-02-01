@@ -6,6 +6,7 @@ import org.bouncycastle.crypto.AsymmetricBlockCipher;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.InvalidCipherTextException;
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
 // BEGIN android-changed
 import org.bouncycastle.crypto.digests.AndroidDigestFactory;
 // END android-changed
@@ -30,6 +31,28 @@ public class OAEPEncoding
         // BEGIN android-changed
         this(cipher, AndroidDigestFactory.getSHA1(), null);
         // END android-changed
+=======
+import org.bouncycastle.crypto.digests.SHA1Digest;
+import org.bouncycastle.crypto.params.ParametersWithRandom;
+
+/**
+ * Optimal Asymmetric Encryption Padding (OAEP) - see PKCS 1 V 2.
+ */
+public class OAEPEncoding
+    implements AsymmetricBlockCipher
+{
+    private byte[]                  defHash;
+    private Digest                  mgf1Hash;
+
+    private AsymmetricBlockCipher   engine;
+    private SecureRandom            random;
+    private boolean                 forEncryption;
+
+    public OAEPEncoding(
+        AsymmetricBlockCipher   cipher)
+    {
+        this(cipher, new SHA1Digest(), null);
+>>>>>>> BRANCH (7cff05 Merge "bouncycastle: Android tree with upstream code for ver)
     }
     
     public OAEPEncoding(

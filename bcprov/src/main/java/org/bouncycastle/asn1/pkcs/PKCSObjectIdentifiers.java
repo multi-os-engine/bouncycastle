@@ -13,6 +13,7 @@ public interface PKCSObjectIdentifiers
     static final ASN1ObjectIdentifier    pkcs_1                    = new ASN1ObjectIdentifier("1.2.840.113549.1.1");
     /** PKCS#1: 1.2.840.113549.1.1.1 */
     static final ASN1ObjectIdentifier    rsaEncryption             = pkcs_1.branch("1");
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
     // BEGIN android-removed
     // /** PKCS#1: 1.2.840.113549.1.1.2 */
     // static final ASN1ObjectIdentifier    md2WithRSAEncryption      = pkcs_1.branch("2");
@@ -111,6 +112,100 @@ public interface PKCSObjectIdentifiers
     // /**  1.2.840.113549.2.4 */
     // static final ASN1ObjectIdentifier    md4                    = digestAlgorithm.branch("4");
     // END android-removed
+=======
+    /** PKCS#1: 1.2.840.113549.1.1.2 */
+    static final ASN1ObjectIdentifier    md2WithRSAEncryption      = pkcs_1.branch("2");
+    /** PKCS#1: 1.2.840.113549.1.1.3 */
+    static final ASN1ObjectIdentifier    md4WithRSAEncryption      = pkcs_1.branch("3");
+    /** PKCS#1: 1.2.840.113549.1.1.4 */
+    static final ASN1ObjectIdentifier    md5WithRSAEncryption      = pkcs_1.branch("4");
+    /** PKCS#1: 1.2.840.113549.1.1.5 */
+    static final ASN1ObjectIdentifier    sha1WithRSAEncryption     = pkcs_1.branch("5");
+    /** PKCS#1: 1.2.840.113549.1.1.6 */
+    static final ASN1ObjectIdentifier    srsaOAEPEncryptionSET     = pkcs_1.branch("6");
+    /** PKCS#1: 1.2.840.113549.1.1.7 */
+    static final ASN1ObjectIdentifier    id_RSAES_OAEP             = pkcs_1.branch("7");
+    /** PKCS#1: 1.2.840.113549.1.1.8 */
+    static final ASN1ObjectIdentifier    id_mgf1                   = pkcs_1.branch("8");
+    /** PKCS#1: 1.2.840.113549.1.1.9 */
+    static final ASN1ObjectIdentifier    id_pSpecified             = pkcs_1.branch("9");
+    /** PKCS#1: 1.2.840.113549.1.1.10 */
+    static final ASN1ObjectIdentifier    id_RSASSA_PSS             = pkcs_1.branch("10");
+    /** PKCS#1: 1.2.840.113549.1.1.11 */
+    static final ASN1ObjectIdentifier    sha256WithRSAEncryption   = pkcs_1.branch("11");
+    /** PKCS#1: 1.2.840.113549.1.1.12 */
+    static final ASN1ObjectIdentifier    sha384WithRSAEncryption   = pkcs_1.branch("12");
+    /** PKCS#1: 1.2.840.113549.1.1.13 */
+    static final ASN1ObjectIdentifier    sha512WithRSAEncryption   = pkcs_1.branch("13");
+    /** PKCS#1: 1.2.840.113549.1.1.14 */
+    static final ASN1ObjectIdentifier    sha224WithRSAEncryption   = pkcs_1.branch("14");
+
+    //
+    // pkcs-3 OBJECT IDENTIFIER ::= {
+    //       iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) 3 }
+    //
+    /** PKCS#3: 1.2.840.113549.1.3 */
+    static final ASN1ObjectIdentifier    pkcs_3                  = new ASN1ObjectIdentifier("1.2.840.113549.1.3");
+    /** PKCS#3: 1.2.840.113549.1.3.1 */
+    static final ASN1ObjectIdentifier    dhKeyAgreement          = pkcs_3.branch("1");
+
+    //
+    // pkcs-5 OBJECT IDENTIFIER ::= {
+    //       iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) 5 }
+    //
+    /** PKCS#5: 1.2.840.113549.1.5 */
+    static final ASN1ObjectIdentifier    pkcs_5                  = new ASN1ObjectIdentifier("1.2.840.113549.1.5");
+
+    /** PKCS#5: 1.2.840.113549.1.5.1 */
+    static final ASN1ObjectIdentifier    pbeWithMD2AndDES_CBC    = pkcs_5.branch("1");
+    /** PKCS#5: 1.2.840.113549.1.5.4 */
+    static final ASN1ObjectIdentifier    pbeWithMD2AndRC2_CBC    = pkcs_5.branch("4");
+    /** PKCS#5: 1.2.840.113549.1.5.3 */
+    static final ASN1ObjectIdentifier    pbeWithMD5AndDES_CBC    = pkcs_5.branch("3");
+    /** PKCS#5: 1.2.840.113549.1.5.6 */
+    static final ASN1ObjectIdentifier    pbeWithMD5AndRC2_CBC    = pkcs_5.branch("6");
+    /** PKCS#5: 1.2.840.113549.1.5.10 */
+    static final ASN1ObjectIdentifier    pbeWithSHA1AndDES_CBC   = pkcs_5.branch("10");
+    /** PKCS#5: 1.2.840.113549.1.5.11 */
+    static final ASN1ObjectIdentifier    pbeWithSHA1AndRC2_CBC   = pkcs_5.branch("11");
+    /** PKCS#5: 1.2.840.113549.1.5.13 */
+    static final ASN1ObjectIdentifier    id_PBES2                = pkcs_5.branch("13");
+    /** PKCS#5: 1.2.840.113549.1.5.12 */
+    static final ASN1ObjectIdentifier    id_PBKDF2               = pkcs_5.branch("12");
+
+    //
+    // encryptionAlgorithm OBJECT IDENTIFIER ::= {
+    //       iso(1) member-body(2) us(840) rsadsi(113549) 3 }
+    //
+    /**  1.2.840.113549.3 */
+    static final ASN1ObjectIdentifier    encryptionAlgorithm     = new ASN1ObjectIdentifier("1.2.840.113549.3");
+
+    /**  1.2.840.113549.3.7 */
+    static final ASN1ObjectIdentifier    des_EDE3_CBC            = encryptionAlgorithm.branch("7");
+    /**  1.2.840.113549.3.2 */
+    static final ASN1ObjectIdentifier    RC2_CBC                 = encryptionAlgorithm.branch("2");
+    /**  1.2.840.113549.3.4 */
+    static final ASN1ObjectIdentifier    rc4                     = encryptionAlgorithm.branch("4");
+
+    //
+    // object identifiers for digests
+    //
+    /**  1.2.840.113549.2 */
+    static final ASN1ObjectIdentifier    digestAlgorithm        = new ASN1ObjectIdentifier("1.2.840.113549.2");
+    //
+    // md2 OBJECT IDENTIFIER ::=
+    //      {iso(1) member-body(2) US(840) rsadsi(113549) digestAlgorithm(2) 2}
+    //
+    /**  1.2.840.113549.2.2 */
+    static final ASN1ObjectIdentifier    md2                    = digestAlgorithm.branch("2");
+
+    //
+    // md4 OBJECT IDENTIFIER ::=
+    //      {iso(1) member-body(2) US(840) rsadsi(113549) digestAlgorithm(2) 4}
+    //
+    /**  1.2.840.113549.2.4 */
+    static final ASN1ObjectIdentifier    md4                    = digestAlgorithm.branch("4");
+>>>>>>> BRANCH (7cff05 Merge "bouncycastle: Android tree with upstream code for ver)
 
     //
     // md5 OBJECT IDENTIFIER ::=

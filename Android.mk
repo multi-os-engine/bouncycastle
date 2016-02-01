@@ -38,6 +38,7 @@ ifneq ($(TARGET_BUILD_PDK),true)
     LOCAL_MODULE := bouncycastle
     LOCAL_MODULE_TAGS := optional
     LOCAL_SRC_FILES := $(android_bcprov_src_files)
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
     LOCAL_JAVA_LIBRARIES := core-oj core-libart conscrypt
     LOCAL_NO_STANDARD_LIBRARIES := true
     LOCAL_JARJAR_RULES := $(LOCAL_PATH)/jarjar-rules.txt
@@ -50,6 +51,20 @@ ifneq ($(TARGET_BUILD_PDK),true)
     LOCAL_MODULE_TAGS := optional
     LOCAL_SRC_FILES := $(android_bcprov_src_files)
     LOCAL_JAVA_LIBRARIES := core-oj core-libart conscrypt
+=======
+    LOCAL_JAVA_LIBRARIES := core-libart conscrypt
+    LOCAL_NO_STANDARD_LIBRARIES := true
+    LOCAL_JARJAR_RULES := $(LOCAL_PATH)/jarjar-rules.txt
+    LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
+    include $(BUILD_JAVA_LIBRARY)
+
+    # non-jarjar version to build okhttp-tests
+    include $(CLEAR_VARS)
+    LOCAL_MODULE := bouncycastle-nojarjar
+    LOCAL_MODULE_TAGS := optional
+    LOCAL_SRC_FILES := $(android_bcprov_src_files)
+    LOCAL_JAVA_LIBRARIES := core-libart conscrypt
+>>>>>>> BRANCH (7cff05 Merge "bouncycastle: Android tree with upstream code for ver)
     LOCAL_NO_STANDARD_LIBRARIES := true
     LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
     include $(BUILD_STATIC_JAVA_LIBRARY)

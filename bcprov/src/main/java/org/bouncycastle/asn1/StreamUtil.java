@@ -8,6 +8,7 @@ import java.nio.channels.FileChannel;
 
 class StreamUtil
 {
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
     // BEGIN android-removed
     // private static final long  MAX_MEMORY = Runtime.getRuntime().maxMemory();
     // END android-removed
@@ -59,6 +60,54 @@ class StreamUtil
 
         return (int) maxMemory;
         // END android-changed
+=======
+    private static final long  MAX_MEMORY = Runtime.getRuntime().maxMemory();
+
+    /**
+     * Find out possible longest length...
+     *
+     * @param in input stream of interest
+     * @return length calculation or MAX_VALUE.
+     */
+    static int findLimit(InputStream in)
+    {
+        if (in instanceof LimitedInputStream)
+        {
+            return ((LimitedInputStream)in).getRemaining();
+        }
+        else if (in instanceof ASN1InputStream)
+        {
+            return ((ASN1InputStream)in).getLimit();
+        }
+        else if (in instanceof ByteArrayInputStream)
+        {
+            return ((ByteArrayInputStream)in).available();
+        }
+        else if (in instanceof FileInputStream)
+        {
+            try
+            {
+                FileChannel channel = ((FileInputStream)in).getChannel();
+                long  size = (channel != null) ? channel.size() : Integer.MAX_VALUE;
+
+                if (size < Integer.MAX_VALUE)
+                {
+                    return (int)size;
+                }
+            }
+            catch (IOException e)
+            {
+                // ignore - they'll find out soon enough!
+            }
+        }
+
+        if (MAX_MEMORY > Integer.MAX_VALUE)
+        {
+            return Integer.MAX_VALUE;
+        }
+
+        return (int)MAX_MEMORY;
+>>>>>>> BRANCH (7cff05 Merge "bouncycastle: Android tree with upstream code for ver)
     }
 
     static int calculateBodyLength(

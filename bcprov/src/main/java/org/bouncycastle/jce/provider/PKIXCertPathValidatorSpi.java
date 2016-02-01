@@ -1,5 +1,6 @@
 package org.bouncycastle.jce.provider;
 
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
 // BEGIN android-added
 import java.math.BigInteger;
 // END android-added
@@ -318,6 +319,285 @@ public class PKIXCertPathValidatorSpi
                 throw new CertPathValidatorException(e.getMessage(), e, certPath, index);
             }
             // END android-added
+=======
+import java.security.InvalidAlgorithmParameterException;
+import java.security.PublicKey;
+import java.security.cert.CertPath;
+import java.security.cert.CertPathParameters;
+import java.security.cert.CertPathValidatorException;
+import java.security.cert.CertPathValidatorResult;
+import java.security.cert.CertPathValidatorSpi;
+import java.security.cert.PKIXCertPathChecker;
+import java.security.cert.PKIXCertPathValidatorResult;
+import java.security.cert.PKIXParameters;
+import java.security.cert.TrustAnchor;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.jcajce.PKIXExtendedBuilderParameters;
+import org.bouncycastle.jcajce.PKIXExtendedParameters;
+import org.bouncycastle.jcajce.util.BCJcaJceHelper;
+import org.bouncycastle.jcajce.util.JcaJceHelper;
+import org.bouncycastle.jce.exception.ExtCertPathValidatorException;
+import org.bouncycastle.x509.ExtendedPKIXParameters;
+
+/**
+ * CertPathValidatorSpi implementation for X.509 Certificate validation � la RFC
+ * 3280.
+ */
+public class PKIXCertPathValidatorSpi
+        extends CertPathValidatorSpi
+{
+    private final JcaJceHelper helper = new BCJcaJceHelper();
+
+    public PKIXCertPathValidatorSpi()
+    {
+    }
+
+    public CertPathValidatorResult engineValidate(
+            CertPath certPath,
+            CertPathParameters params)
+            throws CertPathValidatorException,
+            InvalidAlgorithmParameterException
+    {
+        if (!(params instanceof CertPathParameters))
+        {
+            throw new InvalidAlgorithmParameterException("Parameters must be a " + PKIXParameters.class.getName()
+                    + " instance.");
+        }
+
+        PKIXExtendedParameters paramsPKIX;
+        if (params instanceof PKIXParameters)
+        {
+            PKIXExtendedParameters.Builder paramsPKIXBldr = new PKIXExtendedParameters.Builder((PKIXParameters)params);
+
+            if (params instanceof ExtendedPKIXParameters)
+            {
+                ExtendedPKIXParameters extPKIX = (ExtendedPKIXParameters)params;
+
+                paramsPKIXBldr.setUseDeltasEnabled(extPKIX.isUseDeltasEnabled());
+                paramsPKIXBldr.setValidityModel(extPKIX.getValidityModel());
+            }
+
+            paramsPKIX = paramsPKIXBldr.build();
+        }
+        else if (params instanceof PKIXExtendedBuilderParameters)
+        {
+            paramsPKIX = ((PKIXExtendedBuilderParameters)params).getBaseParameters();
+        }
+        else
+        {
+            paramsPKIX = (PKIXExtendedParameters)params;
+        }
+
+        if (paramsPKIX.getTrustAnchors() == null)
+        {
+            throw new InvalidAlgorithmParameterException(
+                    "trustAnchors is null, this is not allowed for certification path validation.");
+        }
+
+        //
+        // 6.1.1 - inputs
+        //
+
+        //
+        // (a)
+        //
+        List certs = certPath.getCertificates();
+        int n = certs.size();
+
+        if (certs.isEmpty())
+        {
+            throw new CertPathValidatorException("Certification path is empty.", null, certPath, 0);
+        }
+
+        //
+        // (b)
+        //
+        // Date validDate = CertPathValidatorUtilities.getValidDate(paramsPKIX);
+
+        //
+        // (c)
+        //
+        Set userInitialPolicySet = paramsPKIX.getInitialPolicies();
+
+        //
+        // (d)
+        // 
+        TrustAnchor trust;
+        try
+        {
+            trust = CertPathValidatorUtilities.findTrustAnchor((X509Certificate) certs.get(certs.size() - 1),
+                    paramsPKIX.getTrustAnchors(), paramsPKIX.getSigProvider());
+        }
+        catch (AnnotatedException e)
+        {
+            throw new CertPathValidatorException(e.getMessage(), e, certPath, certs.size() - 1);
+        }
+
+        if (trust == null)
+        {
+            throw new CertPathValidatorException("Trust anchor for certification path not found.", null, certPath, -1);
+        }
+
+        // RFC 5280 - CRLs must originate from the same trust anchor as the target certificate.
+        paramsPKIX = new PKIXExtendedParameters.Builder(paramsPKIX).setTrustAnchor(trust).build();
+
+        //
+        // (e), (f), (g) are part of the paramsPKIX object.
+        //
+        Iterator certIter;
+        int index = 0;
+        int i;
+        // Certificate for each interation of the validation loop
+        // Signature information for each iteration of the validation loop
+        //
+        // 6.1.2 - setup
+        //
+
+        //
+        // (a)
+        //
+        List[] policyNodes = new ArrayList[n + 1];
+        for (int j = 0; j < policyNodes.length; j++)
+        {
+            policyNodes[j] = new ArrayList();
+        }
+
+        Set policySet = new HashSet();
+
+        policySet.add(RFC3280CertPathUtilities.ANY_POLICY);
+
+        PKIXPolicyNode validPolicyTree = new PKIXPolicyNode(new ArrayList(), 0, policySet, null, new HashSet(),
+                RFC3280CertPathUtilities.ANY_POLICY, false);
+
+        policyNodes[0].add(validPolicyTree);
+
+        //
+        // (b) and (c)
+        //
+        PKIXNameConstraintValidator nameConstraintValidator = new PKIXNameConstraintValidator();
+
+        // (d)
+        //
+        int explicitPolicy;
+        Set acceptablePolicies = new HashSet();
+
+        if (paramsPKIX.isExplicitPolicyRequired())
+        {
+            explicitPolicy = 0;
+        }
+        else
+        {
+            explicitPolicy = n + 1;
+        }
+
+        //
+        // (e)
+        //
+        int inhibitAnyPolicy;
+
+        if (paramsPKIX.isAnyPolicyInhibited())
+        {
+            inhibitAnyPolicy = 0;
+        }
+        else
+        {
+            inhibitAnyPolicy = n + 1;
+        }
+
+        //
+        // (f)
+        //
+        int policyMapping;
+
+        if (paramsPKIX.isPolicyMappingInhibited())
+        {
+            policyMapping = 0;
+        }
+        else
+        {
+            policyMapping = n + 1;
+        }
+
+        //
+        // (g), (h), (i), (j)
+        //
+        PublicKey workingPublicKey;
+        X500Name workingIssuerName;
+
+        X509Certificate sign = trust.getTrustedCert();
+        try
+        {
+            if (sign != null)
+            {
+                workingIssuerName = PrincipalUtils.getSubjectPrincipal(sign);
+                workingPublicKey = sign.getPublicKey();
+            }
+            else
+            {
+                workingIssuerName = PrincipalUtils.getCA(trust);
+                workingPublicKey = trust.getCAPublicKey();
+            }
+        }
+        catch (IllegalArgumentException ex)
+        {
+            throw new ExtCertPathValidatorException("Subject of trust anchor could not be (re)encoded.", ex, certPath,
+                    -1);
+        }
+
+        AlgorithmIdentifier workingAlgId = null;
+        try
+        {
+            workingAlgId = CertPathValidatorUtilities.getAlgorithmIdentifier(workingPublicKey);
+        }
+        catch (CertPathValidatorException e)
+        {
+            throw new ExtCertPathValidatorException(
+                    "Algorithm identifier of public key of trust anchor could not be read.", e, certPath, -1);
+        }
+        ASN1ObjectIdentifier workingPublicKeyAlgorithm = workingAlgId.getAlgorithm();
+        ASN1Encodable workingPublicKeyParameters = workingAlgId.getParameters();
+
+        //
+        // (k)
+        //
+        int maxPathLength = n;
+
+        //
+        // 6.1.3
+        //
+
+        if (paramsPKIX.getTargetConstraints() != null
+                && !paramsPKIX.getTargetConstraints().match((X509Certificate) certs.get(0)))
+        {
+            throw new ExtCertPathValidatorException(
+                    "Target certificate in certification path does not match targetConstraints.", null, certPath, 0);
+        }
+
+        // 
+        // initialize CertPathChecker's
+        //
+        List pathCheckers = paramsPKIX.getCertPathCheckers();
+        certIter = pathCheckers.iterator();
+        while (certIter.hasNext())
+        {
+            ((PKIXCertPathChecker) certIter.next()).init(false);
+        }
+
+        X509Certificate cert = null;
+
+        for (index = certs.size() - 1; index >= 0; index--)
+        {
+>>>>>>> BRANCH (7cff05 Merge "bouncycastle: Android tree with upstream code for ver)
             // try
             // {
             //

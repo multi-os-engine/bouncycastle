@@ -88,6 +88,7 @@ class PKIXCRLUtil
         {
             Object obj = iter.next();
 
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
             // BEGIN android-removed
 	    // if (obj instanceof Store)
             // {
@@ -106,6 +107,24 @@ class PKIXCRLUtil
             // }
             // else
             // END android-removed
+=======
+            if (obj instanceof Store)
+            {
+                Store store = (Store)obj;
+
+                try
+                {
+                    crls.addAll(store.getMatches(crlSelect));
+                    foundValidStore = true;
+                }
+                catch (StoreException e)
+                {
+                    lastException = new AnnotatedException(
+                        "Exception searching in X.509 CRL store.", e);
+                }
+            }
+            else
+>>>>>>> BRANCH (7cff05 Merge "bouncycastle: Android tree with upstream code for ver)
             {
                 CertStore store = (CertStore)obj;
 

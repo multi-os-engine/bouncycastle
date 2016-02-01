@@ -378,12 +378,15 @@ public class PKCS1Encoding
                 throw new InvalidCipherTextException("unknown block type");
             }
         }
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
         // BEGIN android-added
         if ((type == 1 && forPrivateKey) || (type == 2 && !forPrivateKey))
         {
             throw new InvalidCipherTextException("invalid block type " + type);
         }
         // END android-added
+=======
+>>>>>>> BRANCH (7cff05 Merge "bouncycastle: Android tree with upstream code for ver)
 
         if (useStrictLength && block.length != engine.getOutputBlockSize())
         {

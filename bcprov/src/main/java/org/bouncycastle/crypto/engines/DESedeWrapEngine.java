@@ -6,6 +6,7 @@ import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.Wrapper;
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
 // BEGIN android-changed
 import org.bouncycastle.crypto.digests.AndroidDigestFactory;
 // END android-changed
@@ -57,6 +58,55 @@ public class DESedeWrapEngine
     // BEGIN android-changed
     Digest  sha1 = AndroidDigestFactory.getSHA1();
     // END android-changed
+=======
+import org.bouncycastle.crypto.digests.SHA1Digest;
+import org.bouncycastle.crypto.modes.CBCBlockCipher;
+import org.bouncycastle.crypto.params.KeyParameter;
+import org.bouncycastle.crypto.params.ParametersWithIV;
+import org.bouncycastle.crypto.params.ParametersWithRandom;
+import org.bouncycastle.util.Arrays;
+
+/**
+ * Wrap keys according to
+ * <A HREF="http://www.ietf.org/internet-drafts/draft-ietf-smime-key-wrap-01.txt">
+ * draft-ietf-smime-key-wrap-01.txt</A>.
+ * <p>
+ * Note: 
+ * <ul>
+ * <li>this is based on a draft, and as such is subject to change - don't use this class for anything requiring long term storage.
+ * <li>if you are using this to wrap triple-des keys you need to set the
+ * parity bits on the key and, if it's a two-key triple-des key, pad it
+ * yourself.
+ * </ul>
+ */
+public class DESedeWrapEngine
+    implements Wrapper
+{
+   /** Field engine */
+   private CBCBlockCipher engine;
+
+   /** Field param */
+   private KeyParameter param;
+
+   /** Field paramPlusIV */
+   private ParametersWithIV paramPlusIV;
+
+   /** Field iv */
+   private byte[] iv;
+
+   /** Field forWrapping */
+   private boolean forWrapping;
+
+   /** Field IV2           */
+   private static final byte[] IV2 = { (byte) 0x4a, (byte) 0xdd, (byte) 0xa2,
+                                       (byte) 0x2c, (byte) 0x79, (byte) 0xe8,
+                                       (byte) 0x21, (byte) 0x05 };
+
+    //
+    // checksum digest
+    //
+    Digest  sha1 = new SHA1Digest();
+>>>>>>> BRANCH (7cff05 Merge "bouncycastle: Android tree with upstream code for ver)
     byte[]  digest = new byte[20];
 
    /**

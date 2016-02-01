@@ -20,6 +20,7 @@ import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
 import org.bouncycastle.asn1.cms.ContentInfo;
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
 // BEGIN android-removed
 // import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
 // import org.bouncycastle.asn1.ocsp.OCSPResponse;
@@ -169,6 +170,152 @@ class CMSUtils
     //     return others;
     // }
     // END android-removed
+=======
+import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
+import org.bouncycastle.asn1.ocsp.OCSPResponse;
+import org.bouncycastle.asn1.ocsp.OCSPResponseStatus;
+import org.bouncycastle.cert.X509AttributeCertificateHolder;
+import org.bouncycastle.cert.X509CRLHolder;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.operator.DigestCalculator;
+import org.bouncycastle.util.Store;
+import org.bouncycastle.util.Strings;
+import org.bouncycastle.util.io.Streams;
+import org.bouncycastle.util.io.TeeInputStream;
+import org.bouncycastle.util.io.TeeOutputStream;
+
+class CMSUtils
+{
+    static ContentInfo readContentInfo(
+        byte[] input)
+        throws CMSException
+    {
+        // enforce limit checking as from a byte array
+        return readContentInfo(new ASN1InputStream(input));
+    }
+
+    static ContentInfo readContentInfo(
+        InputStream input)
+        throws CMSException
+    {
+        // enforce some limit checking
+        return readContentInfo(new ASN1InputStream(input));
+    } 
+
+    static List getCertificatesFromStore(Store certStore)
+        throws CMSException
+    {
+        List certs = new ArrayList();
+
+        try
+        {
+            for (Iterator it = certStore.getMatches(null).iterator(); it.hasNext();)
+            {
+                X509CertificateHolder c = (X509CertificateHolder)it.next();
+
+                certs.add(c.toASN1Structure());
+            }
+
+            return certs;
+        }
+        catch (ClassCastException e)
+        {
+            throw new CMSException("error processing certs", e);
+        }
+    }
+
+    static List getAttributeCertificatesFromStore(Store attrStore)
+        throws CMSException
+    {
+        List certs = new ArrayList();
+
+        try
+        {
+            for (Iterator it = attrStore.getMatches(null).iterator(); it.hasNext();)
+            {
+                X509AttributeCertificateHolder attrCert = (X509AttributeCertificateHolder)it.next();
+
+                certs.add(new DERTaggedObject(false, 2, attrCert.toASN1Structure()));
+            }
+
+            return certs;
+        }
+        catch (ClassCastException e)
+        {
+            throw new CMSException("error processing certs", e);
+        }
+    }
+
+
+    static List getCRLsFromStore(Store crlStore)
+        throws CMSException
+    {
+        List crls = new ArrayList();
+
+        try
+        {
+            for (Iterator it = crlStore.getMatches(null).iterator(); it.hasNext();)
+            {
+                Object rev = it.next();
+
+                if (rev instanceof X509CRLHolder)
+                {
+                    X509CRLHolder c = (X509CRLHolder)rev;
+
+                    crls.add(c.toASN1Structure());
+                }
+                else if (rev instanceof OtherRevocationInfoFormat)
+                {
+                    OtherRevocationInfoFormat infoFormat = OtherRevocationInfoFormat.getInstance(rev);
+
+                    validateInfoFormat(infoFormat);
+
+                    crls.add(new DERTaggedObject(false, 1, infoFormat));
+                }
+                else if (rev instanceof ASN1TaggedObject)
+                {
+                    crls.add(rev);
+                }
+            }
+
+            return crls;
+        }
+        catch (ClassCastException e)
+        {
+            throw new CMSException("error processing certs", e);
+        }
+    }
+
+    private static void validateInfoFormat(OtherRevocationInfoFormat infoFormat)
+    {
+        if (CMSObjectIdentifiers.id_ri_ocsp_response.equals(infoFormat.getInfoFormat()))
+        {
+            OCSPResponse resp = OCSPResponse.getInstance(infoFormat.getInfo());
+
+            if (resp.getResponseStatus().getValue().intValue() != OCSPResponseStatus.SUCCESSFUL)
+            {
+                throw new IllegalArgumentException("cannot add unsuccessful OCSP response to CMS SignedData");
+            }
+        }
+    }
+
+    static Collection getOthersFromStore(ASN1ObjectIdentifier otherRevocationInfoFormat, Store otherRevocationInfos)
+    {
+        List others = new ArrayList();
+
+        for (Iterator it = otherRevocationInfos.getMatches(null).iterator(); it.hasNext();)
+        {
+            ASN1Encodable info = (ASN1Encodable)it.next();
+            OtherRevocationInfoFormat infoFormat = new OtherRevocationInfoFormat(otherRevocationInfoFormat, info);
+
+            validateInfoFormat(infoFormat);
+
+            others.add(new DERTaggedObject(false, 1, infoFormat));
+        }
+
+        return others;
+    }
+>>>>>>> BRANCH (7cff05 Merge "bouncycastle: Android tree with upstream code for ver)
 
     static ASN1Set createBerSetFromList(List derObjects)
     {

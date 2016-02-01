@@ -15,6 +15,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.ShortBufferException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEParameterSpec;
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
 // BEGIN android-removed
 // import javax.crypto.spec.RC2ParameterSpec;
 // import javax.crypto.spec.RC5ParameterSpec;
@@ -40,6 +41,29 @@ public class BaseStreamCipher
                                         // RC2ParameterSpec.class,
                                         // RC5ParameterSpec.class,
                                         // END android-removed
+=======
+import javax.crypto.spec.RC2ParameterSpec;
+import javax.crypto.spec.RC5ParameterSpec;
+
+import org.bouncycastle.crypto.CipherParameters;
+import org.bouncycastle.crypto.DataLengthException;
+import org.bouncycastle.crypto.StreamCipher;
+import org.bouncycastle.crypto.params.KeyParameter;
+import org.bouncycastle.crypto.params.ParametersWithIV;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+public class BaseStreamCipher
+    extends BaseWrapCipher
+    implements PBE
+{
+    //
+    // specs we can handle.
+    //
+    private Class[]                 availableSpecs =
+                                    {
+                                        RC2ParameterSpec.class,
+                                        RC5ParameterSpec.class,
+>>>>>>> BRANCH (7cff05 Merge "bouncycastle: Android tree with upstream code for ver)
                                         IvParameterSpec.class,
                                         PBEParameterSpec.class
                                     };

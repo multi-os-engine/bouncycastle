@@ -29,9 +29,13 @@ public final class ARC4
     {
         public KeyGen()
         {
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
             // BEGIN android-changed
             super("ARC4", 128, new CipherKeyGenerator());
             // END android-changed
+=======
+            super("RC4", 128, new CipherKeyGenerator());
+>>>>>>> BRANCH (7cff05 Merge "bouncycastle: Android tree with upstream code for ver)
         }
     }
 

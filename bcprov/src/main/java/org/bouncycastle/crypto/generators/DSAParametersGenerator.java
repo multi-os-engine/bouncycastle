@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 
 import org.bouncycastle.crypto.Digest;
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
 // BEGIN android-changed
 import org.bouncycastle.crypto.digests.AndroidDigestFactory;
 // END android-changed
@@ -129,6 +130,127 @@ public class DSAParametersGenerator
         // BEGIN android-changed
         if (!(digest.getAlgorithmName().equals("SHA-1")))
         // END android-changed
+=======
+import org.bouncycastle.crypto.digests.SHA1Digest;
+import org.bouncycastle.crypto.params.DSAParameterGenerationParameters;
+import org.bouncycastle.crypto.params.DSAParameters;
+import org.bouncycastle.crypto.params.DSAValidationParameters;
+import org.bouncycastle.util.Arrays;
+import org.bouncycastle.util.BigIntegers;
+import org.bouncycastle.util.encoders.Hex;
+
+/**
+ * Generate suitable parameters for DSA, in line with FIPS 186-2, or FIPS 186-3.
+ */
+public class DSAParametersGenerator
+{
+    private Digest          digest;
+    private int             L, N;
+    private int             certainty;
+    private SecureRandom    random;
+
+    private static final BigInteger ZERO = BigInteger.valueOf(0);
+    private static final BigInteger ONE = BigInteger.valueOf(1);
+    private static final BigInteger TWO = BigInteger.valueOf(2);
+
+    private boolean use186_3;
+    private int usageIndex;
+
+    public DSAParametersGenerator()
+    {
+        this(new SHA1Digest());
+    }
+
+    public DSAParametersGenerator(Digest digest)
+    {
+        this.digest = digest;
+    }
+
+    /**
+     * initialise the key generator.
+     *
+     * @param size size of the key (range 2^512 -&gt; 2^1024 - 64 bit increments)
+     * @param certainty measure of robustness of prime (for FIPS 186-2 compliance this should be at least 80).
+     * @param random random byte source.
+     */
+    public void init(
+        int             size,
+        int             certainty,
+        SecureRandom    random)
+    {
+        this.use186_3 = false;
+        this.L = size;
+        this.N = getDefaultN(size);
+        this.certainty = certainty;
+        this.random = random;
+    }
+
+    /**
+     * Initialise the key generator for DSA 2.
+     * <p>
+     *     Use this init method if you need to generate parameters for DSA 2 keys.
+     * </p>
+     *
+     * @param params  DSA 2 key generation parameters.
+     */
+    public void init(
+        DSAParameterGenerationParameters params)
+    {
+        // TODO Should we enforce the minimum 'certainty' values as per C.3 Table C.1?
+        this.use186_3 = true;
+        this.L = params.getL();
+        this.N = params.getN();
+        this.certainty = params.getCertainty();
+        this.random = params.getRandom();
+        this.usageIndex = params.getUsageIndex();
+
+        if ((L < 1024 || L > 3072) || L % 1024 != 0)
+        {
+            throw new IllegalArgumentException("L values must be between 1024 and 3072 and a multiple of 1024");
+        }
+        else if (L == 1024 && N != 160)
+        {
+            throw new IllegalArgumentException("N must be 160 for L = 1024");
+        }
+        else if (L == 2048 && (N != 224 && N != 256))
+        {
+            throw new IllegalArgumentException("N must be 224 or 256 for L = 2048");
+        }
+        else if (L == 3072 && N != 256)
+        {
+            throw new IllegalArgumentException("N must be 256 for L = 3072");
+        }
+
+        if (digest.getDigestSize() * 8 < N)
+        {
+            throw new IllegalStateException("Digest output size too small for value of N");
+        }
+    }
+
+    /**
+     * which generates the p and g values from the given parameters,
+     * returning the DSAParameters object.
+     * <p>
+     * Note: can take a while...
+     */
+    public DSAParameters generateParameters()
+    {
+        return (use186_3)
+            ? generateParameters_FIPS186_3()
+            : generateParameters_FIPS186_2();
+    }
+
+    private DSAParameters generateParameters_FIPS186_2()
+    {
+        byte[]          seed = new byte[20];
+        byte[]          part1 = new byte[20];
+        byte[]          part2 = new byte[20];
+        byte[]          u = new byte[20];
+        int             n = (L - 1) / 160;
+        byte[]          w = new byte[L / 8];
+
+        if (!(digest instanceof SHA1Digest))
+>>>>>>> BRANCH (7cff05 Merge "bouncycastle: Android tree with upstream code for ver)
         {
             throw new IllegalStateException("can only use SHA-1 for generating FIPS 186-2 parameters");
         }
