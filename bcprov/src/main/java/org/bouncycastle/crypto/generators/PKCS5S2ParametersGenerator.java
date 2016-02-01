@@ -4,6 +4,7 @@ import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.Mac;
 import org.bouncycastle.crypto.PBEParametersGenerator;
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
 // BEGIN android-changed
 import org.bouncycastle.crypto.digests.AndroidDigestFactory;
 // END android-changed
@@ -33,6 +34,33 @@ public class PKCS5S2ParametersGenerator
         // BEGIN android-changed
         this(AndroidDigestFactory.getSHA1());
         // END android-changed
+=======
+import org.bouncycastle.crypto.digests.SHA1Digest;
+import org.bouncycastle.crypto.macs.HMac;
+import org.bouncycastle.crypto.params.KeyParameter;
+import org.bouncycastle.crypto.params.ParametersWithIV;
+
+/**
+ * Generator for PBE derived keys and ivs as defined by PKCS 5 V2.0 Scheme 2.
+ * This generator uses a SHA-1 HMac as the calculation function.
+ * <p>
+ * The document this implementation is based on can be found at
+ * <a href=http://www.rsasecurity.com/rsalabs/pkcs/pkcs-5/index.html>
+ * RSA's PKCS5 Page</a>
+ */
+public class PKCS5S2ParametersGenerator
+    extends PBEParametersGenerator
+{
+    private Mac hMac;
+    private byte[] state;
+
+    /**
+     * construct a PKCS5 Scheme 2 Parameters generator.
+     */
+    public PKCS5S2ParametersGenerator()
+    {
+        this(new SHA1Digest());
+>>>>>>> BRANCH (6d876f Merge "Update elements in android tree as in aosp and goog T)
     }
 
     public PKCS5S2ParametersGenerator(Digest digest)

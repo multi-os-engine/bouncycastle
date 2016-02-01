@@ -201,6 +201,7 @@ public class KeyFactorySpi
         }
     }
 
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
     // BEGIN android-removed
     // public static class ECGOST3410
     //     extends KeyFactorySpi
@@ -211,6 +212,16 @@ public class KeyFactorySpi
     //     }
     // }
     // END android-removed
+=======
+    public static class ECGOST3410
+        extends KeyFactorySpi
+    {
+        public ECGOST3410()
+        {
+            super("ECGOST3410", BouncyCastleProvider.CONFIGURATION);
+        }
+    }
+>>>>>>> BRANCH (6d876f Merge "Update elements in android tree as in aosp and goog T)
 
     public static class ECDH
         extends KeyFactorySpi

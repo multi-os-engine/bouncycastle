@@ -152,6 +152,7 @@ public class ASN1ObjectIdentifier
             }
         }
 
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
         // BEGIN android-changed
         /*
          * Intern the identifier so there aren't hundreds of duplicates
@@ -186,6 +187,30 @@ public class ASN1ObjectIdentifier
          */
         this.identifier = identifier.intern();
         // END android-changed
+=======
+        this.identifier = objId.toString();
+        this.body = Arrays.clone(bytes);
+    }
+
+    /**
+     * Create an OID based on the passed in String.
+     *
+     * @param identifier a string representation of an OID.
+     */
+    public ASN1ObjectIdentifier(
+        String identifier)
+    {
+        if (identifier == null)
+        {
+            throw new IllegalArgumentException("'identifier' cannot be null");
+        }
+        if (!isValidIdentifier(identifier))
+        {
+            throw new IllegalArgumentException("string " + identifier + " not an OID");
+        }
+
+        this.identifier = identifier;
+>>>>>>> BRANCH (6d876f Merge "Update elements in android tree as in aosp and goog T)
     }
 
      /**

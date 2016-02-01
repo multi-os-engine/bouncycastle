@@ -3,6 +3,7 @@ package org.bouncycastle.crypto.generators;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
 // BEGIN android-added
 import java.util.logging.Logger;
 // END android-added
@@ -72,6 +73,57 @@ class DHParametersHelper
         long duration = end - start;
         logger.info("Generated safe primes: " + tries + " tries took " + duration + "ms");
         // END android-added
+=======
+import org.bouncycastle.math.ec.WNafUtil;
+import org.bouncycastle.util.BigIntegers;
+
+class DHParametersHelper
+{
+    private static final BigInteger ONE = BigInteger.valueOf(1);
+    private static final BigInteger TWO = BigInteger.valueOf(2);
+
+    /*
+     * Finds a pair of prime BigInteger's {p, q: p = 2q + 1}
+     * 
+     * (see: Handbook of Applied Cryptography 4.86)
+     */
+    static BigInteger[] generateSafePrimes(int size, int certainty, SecureRandom random)
+    {
+        BigInteger p, q;
+        int qLength = size - 1;
+        int minWeight = size >>> 2;
+
+        for (;;)
+        {
+            q = new BigInteger(qLength, 2, random);
+
+            // p <- 2q + 1
+            p = q.shiftLeft(1).add(ONE);
+
+            if (!p.isProbablePrime(certainty))
+            {
+                continue;
+            }
+
+            if (certainty > 2 && !q.isProbablePrime(certainty - 2))
+            {
+                continue;
+            }
+
+            /*
+             * Require a minimum weight of the NAF representation, since low-weight primes may be
+             * weak against a version of the number-field-sieve for the discrete-logarithm-problem.
+             * 
+             * See "The number field sieve for integers of low weight", Oliver Schirokauer.
+             */
+            if (WNafUtil.getNafWeight(p) < minWeight)
+            {
+                continue;
+            }
+
+            break;
+        }
+>>>>>>> BRANCH (6d876f Merge "Update elements in android tree as in aosp and goog T)
 
         return new BigInteger[] { p, q };
     }

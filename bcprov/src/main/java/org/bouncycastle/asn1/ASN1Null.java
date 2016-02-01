@@ -8,12 +8,15 @@ import java.io.IOException;
 public abstract class ASN1Null
     extends ASN1Primitive
 {
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
     // BEGIN android-added
     /*package*/ ASN1Null()
     {
     }
 
     // END android-added
+=======
+>>>>>>> BRANCH (6d876f Merge "Update elements in android tree as in aosp and goog T)
     /**
      * Return an instance of ASN.1 NULL from the passed in object.
      * <p>

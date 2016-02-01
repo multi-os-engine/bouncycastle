@@ -78,6 +78,7 @@ public class X509NameTokenizer
                 }
                 else
                 {
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
                     // BEGIN android-added
                     // copied from a newer version of BouncyCastle
                     if (c == '#' && buf.charAt(buf.length() - 1) == '=')
@@ -89,6 +90,8 @@ public class X509NameTokenizer
                         buf.append('\\');
                     }
                     // END android-added
+=======
+>>>>>>> BRANCH (6d876f Merge "Update elements in android tree as in aosp and goog T)
                     buf.append(c);
                 }
             }
