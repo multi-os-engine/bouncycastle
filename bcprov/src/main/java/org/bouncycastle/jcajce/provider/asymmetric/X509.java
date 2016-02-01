@@ -18,10 +18,15 @@ public class X509
 
         public void configure(ConfigurableProvider provider)
         {
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
             // BEGIN android-removed
             // provider.addAlgorithm("KeyFactory.X.509", "org.bouncycastle.jcajce.provider.asymmetric.x509.KeyFactory");
             // provider.addAlgorithm("Alg.Alias.KeyFactory.X509", "X.509");
             // END android-removed
+=======
+            provider.addAlgorithm("KeyFactory.X.509", "org.bouncycastle.jcajce.provider.asymmetric.x509.KeyFactory");
+            provider.addAlgorithm("Alg.Alias.KeyFactory.X509", "X.509");
+>>>>>>> BRANCH (6d876f Merge "Update elements in android tree as in aosp and goog T)
 
             //
             // certificate factories.

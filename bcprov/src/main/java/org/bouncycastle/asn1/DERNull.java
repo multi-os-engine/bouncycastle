@@ -15,9 +15,13 @@ public class DERNull
     /**
      * @deprecated use DERNull.INSTANCE
      */
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
     // BEGIN android-changed
     protected DERNull()
     // END android-changed
+=======
+    public DERNull()
+>>>>>>> BRANCH (6d876f Merge "Update elements in android tree as in aosp and goog T)
     {
     }
 

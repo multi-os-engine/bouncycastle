@@ -28,9 +28,13 @@ import org.bouncycastle.asn1.BERTaggedObject;
  */
 public class ContentInfo
     extends ASN1Object
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
     // BEGIN android-removed
     // implements CMSObjectIdentifiers
     // END android-removed
+=======
+    implements CMSObjectIdentifiers
+>>>>>>> BRANCH (6d876f Merge "Update elements in android tree as in aosp and goog T)
 {
     private ASN1ObjectIdentifier contentType;
     private ASN1Encodable        content;

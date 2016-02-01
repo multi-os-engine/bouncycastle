@@ -23,9 +23,12 @@ public class DSAUtil
     public static final ASN1ObjectIdentifier[] dsaOids =
     {
         X9ObjectIdentifiers.id_dsa,
+<<<<<<< HEAD   (9b30eb Merge "Add core-oj to the list of dependencies")
         // BEGIN android-added
         X9ObjectIdentifiers.id_dsa_with_sha1,
         // END android-added
+=======
+>>>>>>> BRANCH (6d876f Merge "Update elements in android tree as in aosp and goog T)
         OIWObjectIdentifiers.dsaWithSHA1
     };
 
