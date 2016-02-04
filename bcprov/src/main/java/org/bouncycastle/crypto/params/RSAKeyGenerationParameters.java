@@ -18,6 +18,10 @@ public class RSAKeyGenerationParameters
         int             certainty)
     {
         super(random, strength);
+        // TODO: DELETE THIS
+        if (random == null) {
+            throw new RuntimeException("random is null!");
+        }
 
         if (strength < 12)
         {
