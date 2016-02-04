@@ -72,6 +72,14 @@ public class DefaultDigestAlgorithmIdentifierFinder
         digestNameToOids.put("SHA-512", NISTObjectIdentifiers.id_sha512);
 
         // BEGIN android-removed
+        // digestNameToOids.put("SHA3-224", NISTObjectIdentifiers.id_sha3_224);
+        // digestNameToOids.put("SHA3-256", NISTObjectIdentifiers.id_sha3_256);
+        // digestNameToOids.put("SHA3-384", NISTObjectIdentifiers.id_sha3_384);
+        // digestNameToOids.put("SHA3-512", NISTObjectIdentifiers.id_sha3_512);
+        //
+        // digestNameToOids.put("SHAKE-128", NISTObjectIdentifiers.id_shake128);
+        // digestNameToOids.put("SHAKE-256", NISTObjectIdentifiers.id_shake256);
+        //
         // digestNameToOids.put("GOST3411", CryptoProObjectIdentifiers.gostR3411);
         //
         // digestNameToOids.put("MD2", PKCSObjectIdentifiers.md2);
