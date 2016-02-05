@@ -37,6 +37,8 @@ import java.util.Map;
 import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 
+import javax.security.auth.x500.X500Principal;
+
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Enumerated;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
@@ -720,6 +722,7 @@ class CertPathValidatorUtilities
 
                         for (int j = 0; j < genNames.length; j++)
                         {
+<<<<<<< HEAD   (3e75bd Merge "Restoring the contents of aosp after")
                             // BEGIN android-removed
                             // PKIXCRLStore store = namedCRLStoreMap.get(genNames[i]);
                             // END android-removed
@@ -728,6 +731,9 @@ class CertPathValidatorUtilities
                             // However, it's breaking the tests.
                             PKIXCRLStore store = namedCRLStoreMap.get(genNames[j]);
                             // END android-added
+=======
+                            PKIXCRLStore store = namedCRLStoreMap.get(genNames[j]);
+>>>>>>> BRANCH (119751 bouncycastle: Android tree with upstream code for version 1.)
                             if (store != null)
                             {
                                 stores.add(store);
@@ -900,6 +906,7 @@ class CertPathValidatorUtilities
             {
                 return;
             }
+<<<<<<< HEAD   (3e75bd Merge "Restoring the contents of aosp after")
             // BEGIN android-removed
             // X500Name certIssuer = X500Name.getInstance(crl_entry.getCertificateIssuer().getEncoded());
             // END android-removed
@@ -914,10 +921,19 @@ class CertPathValidatorUtilities
                 certIssuer = X500Name.getInstance(certificateIssuerPrincipal.getEncoded());
             }
             // END android-added
+=======
 
-            if (certIssuer == null)
+            X500Principal certificateIssuer = crl_entry.getCertificateIssuer();
+>>>>>>> BRANCH (119751 bouncycastle: Android tree with upstream code for version 1.)
+
+            X500Name certIssuer;
+            if (certificateIssuer == null)
             {
                 certIssuer = PrincipalUtils.getIssuerPrincipal(crl);
+            }
+            else
+            {
+                certIssuer = X500Name.getInstance(certificateIssuer.getEncoded());
             }
 
             if (! PrincipalUtils.getEncodedIssuerPrincipal(cert).equals(certIssuer))
