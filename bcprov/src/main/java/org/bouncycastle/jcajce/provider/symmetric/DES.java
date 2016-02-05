@@ -396,6 +396,7 @@ public final class DES
         }
     }
 
+<<<<<<< HEAD   (3e75bd Merge "Restoring the contents of aosp after")
     // BEGIN android-removed
     // /**
     //  * PBEWithMD2AndDES
@@ -409,6 +410,19 @@ public final class DES
     //     }
     // }
     // END android-removed
+=======
+    /**
+     * PBEWithMD2AndDES
+     */
+    static public class PBEWithMD2
+        extends BaseBlockCipher
+    {
+        public PBEWithMD2()
+        {
+            super(new CBCBlockCipher(new DESEngine()), PKCS5S1, MD2, 64, 8);
+        }
+    }
+>>>>>>> BRANCH (119751 bouncycastle: Android tree with upstream code for version 1.)
 
     /**
      * PBEWithMD5AndDES
@@ -418,7 +432,7 @@ public final class DES
     {
         public PBEWithMD5()
         {
-            super(new CBCBlockCipher(new DESEngine()));
+            super(new CBCBlockCipher(new DESEngine()), PKCS5S1, MD5, 64, 8);
         }
     }
 
@@ -430,7 +444,7 @@ public final class DES
     {
         public PBEWithSHA1()
         {
-            super(new CBCBlockCipher(new DESEngine()));
+            super(new CBCBlockCipher(new DESEngine()), PKCS5S1, SHA1, 64, 8);
         }
     }
     
@@ -448,6 +462,7 @@ public final class DES
         {
 
             provider.addAlgorithm("Cipher.DES", PREFIX + "$ECB");
+<<<<<<< HEAD   (3e75bd Merge "Restoring the contents of aosp after")
             // BEGIN android-removed
             // provider.addAlgorithm("Cipher." + OIWObjectIdentifiers.desCBC, PREFIX + "$CBC");
             //
@@ -455,6 +470,13 @@ public final class DES
             //
             // provider.addAlgorithm("Cipher.DESRFC3211WRAP", PREFIX + "$RFC3211");
             // END android-removed
+=======
+            provider.addAlgorithm("Cipher", OIWObjectIdentifiers.desCBC, PREFIX + "$CBC");
+
+            addAlias(provider, OIWObjectIdentifiers.desCBC, "DES");
+
+            provider.addAlgorithm("Cipher.DESRFC3211WRAP", PREFIX + "$RFC3211");
+>>>>>>> BRANCH (119751 bouncycastle: Android tree with upstream code for version 1.)
 
             provider.addAlgorithm("KeyGenerator.DES", PREFIX + "$KeyGenerator");
 
@@ -486,7 +508,7 @@ public final class DES
             // END android-removed
 
             provider.addAlgorithm("AlgorithmParameters.DES", PACKAGE + ".util.IvAlgorithmParameters");
-            provider.addAlgorithm("Alg.Alias.AlgorithmParameters." + OIWObjectIdentifiers.desCBC, "DES");
+            provider.addAlgorithm("Alg.Alias.AlgorithmParameters", OIWObjectIdentifiers.desCBC, "DES");
 
             // BEGIN android-removed
             // provider.addAlgorithm("AlgorithmParameterGenerator.DES",  PREFIX + "$AlgParamGen");
@@ -497,6 +519,7 @@ public final class DES
             provider.addAlgorithm("Cipher.PBEWITHMD5ANDDES", PREFIX + "$PBEWithMD5");
             provider.addAlgorithm("Cipher.PBEWITHSHA1ANDDES", PREFIX + "$PBEWithSHA1");
             
+<<<<<<< HEAD   (3e75bd Merge "Restoring the contents of aosp after")
             // BEGIN android-removed
             // provider.addAlgorithm("Alg.Alias.Cipher." + PKCSObjectIdentifiers.pbeWithMD2AndDES_CBC, "PBEWITHMD2ANDDES");
             // END android-removed
@@ -506,6 +529,17 @@ public final class DES
             // BEGIN android-removed
             // provider.addAlgorithm("SecretKeyFactory.PBEWITHMD2ANDDES", PREFIX + "$PBEWithMD2KeyFactory");
             // END android-removed
+=======
+            provider.addAlgorithm("Alg.Alias.Cipher", PKCSObjectIdentifiers.pbeWithMD2AndDES_CBC, "PBEWITHMD2ANDDES");
+            provider.addAlgorithm("Alg.Alias.Cipher", PKCSObjectIdentifiers.pbeWithMD5AndDES_CBC, "PBEWITHMD5ANDDES");
+            provider.addAlgorithm("Alg.Alias.Cipher", PKCSObjectIdentifiers.pbeWithSHA1AndDES_CBC, "PBEWITHSHA1ANDDES");
+
+            provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHMD2ANDDES-CBC", "PBEWITHMD2ANDDES");
+            provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHMD5ANDDES-CBC", "PBEWITHMD5ANDDES");
+            provider.addAlgorithm("Alg.Alias.Cipher.PBEWITHSHA1ANDDES-CBC", "PBEWITHSHA1ANDDES");
+
+            provider.addAlgorithm("SecretKeyFactory.PBEWITHMD2ANDDES", PREFIX + "$PBEWithMD2KeyFactory");
+>>>>>>> BRANCH (119751 bouncycastle: Android tree with upstream code for version 1.)
             provider.addAlgorithm("SecretKeyFactory.PBEWITHMD5ANDDES", PREFIX + "$PBEWithMD5KeyFactory");
             provider.addAlgorithm("SecretKeyFactory.PBEWITHSHA1ANDDES", PREFIX + "$PBEWithSHA1KeyFactory");
 

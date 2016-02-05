@@ -10,6 +10,7 @@ import org.bouncycastle.asn1.nist.NISTObjectIdentifiers;
 import org.bouncycastle.asn1.oiw.OIWObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.crypto.Digest;
+<<<<<<< HEAD   (3e75bd Merge "Restoring the contents of aosp after")
 // BEGIN android-removed
 // import org.bouncycastle.crypto.digests.MD5Digest;
 // import org.bouncycastle.crypto.digests.SHA1Digest;
@@ -21,6 +22,15 @@ import org.bouncycastle.crypto.Digest;
 // BEGIN android-added
 import org.bouncycastle.crypto.digests.AndroidDigestFactory;
 // END android-added
+=======
+import org.bouncycastle.crypto.digests.MD5Digest;
+import org.bouncycastle.crypto.digests.SHA1Digest;
+import org.bouncycastle.crypto.digests.SHA224Digest;
+import org.bouncycastle.crypto.digests.SHA256Digest;
+import org.bouncycastle.crypto.digests.SHA384Digest;
+import org.bouncycastle.crypto.digests.SHA512Digest;
+import org.bouncycastle.crypto.digests.SHA512tDigest;
+>>>>>>> BRANCH (119751 bouncycastle: Android tree with upstream code for version 1.)
 import org.bouncycastle.util.Strings;
 
 public class DigestFactory
@@ -31,7 +41,9 @@ public class DigestFactory
     private static Set sha256 = new HashSet();
     private static Set sha384 = new HashSet();
     private static Set sha512 = new HashSet();
-    
+    private static Set sha512_224 = new HashSet();
+    private static Set sha512_256 = new HashSet();
+
     private static Map oids = new HashMap();
     
     static
@@ -59,6 +71,14 @@ public class DigestFactory
         sha512.add("SHA-512");
         sha512.add(NISTObjectIdentifiers.id_sha512.getId()); 
 
+        sha512_224.add("SHA512(224)");
+        sha512_224.add("SHA-512(224)");
+        sha512_224.add(NISTObjectIdentifiers.id_sha512_224.getId());
+
+        sha512_256.add("SHA512(256)");
+        sha512_256.add("SHA-512(256)");
+        sha512_256.add(NISTObjectIdentifiers.id_sha512_256.getId());
+
         oids.put("MD5", PKCSObjectIdentifiers.md5);
         oids.put(PKCSObjectIdentifiers.md5.getId(), PKCSObjectIdentifiers.md5);
         
@@ -80,7 +100,15 @@ public class DigestFactory
         
         oids.put("SHA512", NISTObjectIdentifiers.id_sha512);
         oids.put("SHA-512", NISTObjectIdentifiers.id_sha512);
-        oids.put(NISTObjectIdentifiers.id_sha512.getId(), NISTObjectIdentifiers.id_sha512); 
+        oids.put(NISTObjectIdentifiers.id_sha512.getId(), NISTObjectIdentifiers.id_sha512);
+
+        oids.put("SHA512(224)", NISTObjectIdentifiers.id_sha512_224);
+        oids.put("SHA-512(224)", NISTObjectIdentifiers.id_sha512_224);
+        oids.put(NISTObjectIdentifiers.id_sha512_224.getId(), NISTObjectIdentifiers.id_sha512_224);
+
+        oids.put("SHA512(256)", NISTObjectIdentifiers.id_sha512_256);
+        oids.put("SHA-512(256)", NISTObjectIdentifiers.id_sha512_256);
+        oids.put(NISTObjectIdentifiers.id_sha512_256.getId(), NISTObjectIdentifiers.id_sha512_256);
     }
     
     public static Digest getDigest(
@@ -124,7 +152,15 @@ public class DigestFactory
             return AndroidDigestFactory.getSHA512();
             // END android-changed
         }
-        
+        if (sha512_224.contains(digestName))
+        {
+            return new SHA512tDigest(224);
+        }
+        if (sha512_256.contains(digestName))
+        {
+            return new SHA512tDigest(256);
+        }
+
         return null;
     }
     
@@ -137,6 +173,8 @@ public class DigestFactory
             || (sha256.contains(digest1) && sha256.contains(digest2))
             || (sha384.contains(digest1) && sha384.contains(digest2))
             || (sha512.contains(digest1) && sha512.contains(digest2))
+            || (sha512_224.contains(digest1) && sha512_224.contains(digest2))
+            || (sha512_256.contains(digest1) && sha512_256.contains(digest2))
             || (md5.contains(digest1) && md5.contains(digest2));
     }
     
