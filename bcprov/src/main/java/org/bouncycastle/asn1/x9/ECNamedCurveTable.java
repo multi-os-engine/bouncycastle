@@ -4,6 +4,8 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.anssi.ANSSINamedCurves;
+import org.bouncycastle.asn1.cryptopro.ECGOST3410NamedCurves;
 import org.bouncycastle.asn1.nist.NISTNamedCurves;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
 // BEGIN android-removed
@@ -32,16 +34,28 @@ public class ECNamedCurveTable
             ecP = SECNamedCurves.getByName(name);
         }
 
+<<<<<<< HEAD   (3e75bd Merge "Restoring the contents of aosp after")
         // BEGIN android-removed
         // if (ecP == null)
         // {
         //     ecP = TeleTrusTNamedCurves.getByName(name);
         // }
         // END android-removed
-
+=======
         if (ecP == null)
         {
             ecP = NISTNamedCurves.getByName(name);
+        }
+
+        if (ecP == null)
+        {
+            ecP = TeleTrusTNamedCurves.getByName(name);
+        }
+>>>>>>> BRANCH (119751 bouncycastle: Android tree with upstream code for version 1.)
+
+        if (ecP == null)
+        {
+            ecP = ANSSINamedCurves.getByName(name);
         }
 
         return ecP;
@@ -63,19 +77,66 @@ public class ECNamedCurveTable
             oid = SECNamedCurves.getOID(name);
         }
 
+<<<<<<< HEAD   (3e75bd Merge "Restoring the contents of aosp after")
         // BEGIN android-removed
         // if (oid == null)
         // {
         //     oid = TeleTrusTNamedCurves.getOID(name);
         // }
         // END android-removed
-
+=======
         if (oid == null)
         {
             oid = NISTNamedCurves.getOID(name);
         }
 
+        if (oid == null)
+        {
+            oid = TeleTrusTNamedCurves.getOID(name);
+        }
+>>>>>>> BRANCH (119751 bouncycastle: Android tree with upstream code for version 1.)
+
+        if (oid == null)
+        {
+            oid = ANSSINamedCurves.getOID(name);
+        }
+
         return oid;
+    }
+
+    /**
+     * return a X9ECParameters object representing the passed in named
+     * curve.
+     *
+     * @param oid the object id of the curve requested
+     * @return a standard name for the curve.
+     */
+    public static String getName(
+        ASN1ObjectIdentifier oid)
+    {
+        String name = NISTNamedCurves.getName(oid);
+
+        if (name == null)
+        {
+            name = SECNamedCurves.getName(oid);
+        }
+
+        if (name == null)
+        {
+            name = TeleTrusTNamedCurves.getName(oid);
+        }
+
+        if (name == null)
+        {
+            name = X962NamedCurves.getName(oid);
+        }
+
+        if (name == null)
+        {
+            name = ECGOST3410NamedCurves.getName(oid);
+        }
+
+        return name;
     }
 
     /**
@@ -95,14 +156,26 @@ public class ECNamedCurveTable
             ecP = SECNamedCurves.getByOID(oid);
         }
 
+<<<<<<< HEAD   (3e75bd Merge "Restoring the contents of aosp after")
         // BEGIN android-removed
         // if (ecP == null)
         // {
         //     ecP = TeleTrusTNamedCurves.getByOID(oid);
         // }
         // END android-removed
-
+=======
         // NOTE: All the NIST curves are currently from SEC, so no point in redundant OID lookup
+
+        if (ecP == null)
+        {
+            ecP = TeleTrusTNamedCurves.getByOID(oid);
+        }
+>>>>>>> BRANCH (119751 bouncycastle: Android tree with upstream code for version 1.)
+
+        if (ecP == null)
+        {
+            ecP = ANSSINamedCurves.getByOID(oid);
+        }
 
         return ecP;
     }
@@ -119,9 +192,14 @@ public class ECNamedCurveTable
         addEnumeration(v, X962NamedCurves.getNames());
         addEnumeration(v, SECNamedCurves.getNames());
         addEnumeration(v, NISTNamedCurves.getNames());
+<<<<<<< HEAD   (3e75bd Merge "Restoring the contents of aosp after")
         // BEGIN android-removed
         // addEnumeration(v, TeleTrusTNamedCurves.getNames());
         // END android-removed
+=======
+        addEnumeration(v, TeleTrusTNamedCurves.getNames());
+        addEnumeration(v, ANSSINamedCurves.getNames());
+>>>>>>> BRANCH (119751 bouncycastle: Android tree with upstream code for version 1.)
 
         return v.elements();
     }

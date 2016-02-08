@@ -25,6 +25,7 @@ import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.crypto.AsymmetricBlockCipher;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.Digest;
+<<<<<<< HEAD   (3e75bd Merge "Restoring the contents of aosp after")
 // BEGIN android-removed
 // import org.bouncycastle.crypto.digests.MD2Digest;
 // import org.bouncycastle.crypto.digests.MD4Digest;
@@ -42,6 +43,21 @@ import org.bouncycastle.crypto.Digest;
 // BEGIN android-added
 import org.bouncycastle.crypto.digests.AndroidDigestFactory;
 // END android-added
+=======
+import org.bouncycastle.crypto.digests.MD2Digest;
+import org.bouncycastle.crypto.digests.MD4Digest;
+import org.bouncycastle.crypto.digests.MD5Digest;
+import org.bouncycastle.crypto.digests.NullDigest;
+import org.bouncycastle.crypto.digests.RIPEMD128Digest;
+import org.bouncycastle.crypto.digests.RIPEMD160Digest;
+import org.bouncycastle.crypto.digests.RIPEMD256Digest;
+import org.bouncycastle.crypto.digests.SHA1Digest;
+import org.bouncycastle.crypto.digests.SHA224Digest;
+import org.bouncycastle.crypto.digests.SHA256Digest;
+import org.bouncycastle.crypto.digests.SHA384Digest;
+import org.bouncycastle.crypto.digests.SHA512Digest;
+import org.bouncycastle.crypto.digests.SHA512tDigest;
+>>>>>>> BRANCH (119751 bouncycastle: Android tree with upstream code for version 1.)
 import org.bouncycastle.crypto.encodings.PKCS1Encoding;
 import org.bouncycastle.crypto.engines.RSABlindedEngine;
 import org.bouncycastle.util.Arrays;
@@ -311,6 +327,7 @@ public class DigestSignatureSpi
         }
     }
 
+<<<<<<< HEAD   (3e75bd Merge "Restoring the contents of aosp after")
     // BEGIN android-removed
     // static public class MD2
     //     extends DigestSignatureSpi
@@ -330,6 +347,43 @@ public class DigestSignatureSpi
     //     }
     // }
     // END android-removed
+=======
+    static public class SHA512_224
+        extends DigestSignatureSpi
+    {
+        public SHA512_224()
+        {
+            super(NISTObjectIdentifiers.id_sha512_224, new SHA512tDigest(224), new PKCS1Encoding(new RSABlindedEngine()));
+        }
+    }
+
+    static public class SHA512_256
+        extends DigestSignatureSpi
+    {
+        public SHA512_256()
+        {
+            super(NISTObjectIdentifiers.id_sha512_256, new SHA512tDigest(256), new PKCS1Encoding(new RSABlindedEngine()));
+        }
+    }
+
+    static public class MD2
+        extends DigestSignatureSpi
+    {
+        public MD2()
+        {
+            super(PKCSObjectIdentifiers.md2, new MD2Digest(), new PKCS1Encoding(new RSABlindedEngine()));
+        }
+    }
+
+    static public class MD4
+        extends DigestSignatureSpi
+    {
+        public MD4()
+        {
+            super(PKCSObjectIdentifiers.md4, new MD4Digest(), new PKCS1Encoding(new RSABlindedEngine()));
+        }
+    }
+>>>>>>> BRANCH (119751 bouncycastle: Android tree with upstream code for version 1.)
 
     static public class MD5
         extends DigestSignatureSpi
