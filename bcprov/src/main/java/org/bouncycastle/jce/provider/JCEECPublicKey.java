@@ -46,6 +46,7 @@ import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.math.ec.custom.sec.SecP256K1Point;
 import org.bouncycastle.math.ec.custom.sec.SecP256R1Point;
+import org.bouncycastle.util.Strings;
 
 public class JCEECPublicKey
     implements ECPublicKey, org.bouncycastle.jce.interfaces.ECPublicKey, ECPointEncoder
@@ -191,6 +192,7 @@ public class JCEECPublicKey
 
     private void populateFromPubKeyInfo(SubjectPublicKeyInfo info)
     {
+<<<<<<< HEAD   (3e75bd Merge "Restoring the contents of aosp after")
         // if (info.getAlgorithmId().getObjectId().equals(CryptoProObjectIdentifiers.gostR3410_2001))
         // {
         //     DERBitString bits = info.getPublicKeyData();
@@ -240,6 +242,56 @@ public class JCEECPublicKey
         // }
         // else
         // END android-removed
+=======
+        if (info.getAlgorithmId().getAlgorithm().equals(CryptoProObjectIdentifiers.gostR3410_2001))
+        {
+            DERBitString bits = info.getPublicKeyData();
+            ASN1OctetString key;
+            this.algorithm = "ECGOST3410";
+
+            try
+            {
+                key = (ASN1OctetString) ASN1Primitive.fromByteArray(bits.getBytes());
+            }
+            catch (IOException ex)
+            {
+                throw new IllegalArgumentException("error recovering public key");
+            }
+
+            byte[]          keyEnc = key.getOctets();
+            byte[]          x = new byte[32];
+            byte[]          y = new byte[32];
+
+            for (int i = 0; i != x.length; i++)
+            {
+                x[i] = keyEnc[32 - 1 - i];
+            }
+
+            for (int i = 0; i != y.length; i++)
+            {
+                y[i] = keyEnc[64 - 1 - i];
+            }
+
+            gostParams = new GOST3410PublicKeyAlgParameters((ASN1Sequence)info.getAlgorithmId().getParameters());
+
+            ECNamedCurveParameterSpec spec = ECGOST3410NamedCurveTable.getParameterSpec(ECGOST3410NamedCurves.getName(gostParams.getPublicKeyParamSet()));
+
+            ECCurve curve = spec.getCurve();
+            EllipticCurve ellipticCurve = EC5Util.convertCurve(curve, spec.getSeed());
+
+            this.q = curve.createPoint(new BigInteger(1, x), new BigInteger(1, y), false);
+
+            ecSpec = new ECNamedCurveSpec(
+                    ECGOST3410NamedCurves.getName(gostParams.getPublicKeyParamSet()),
+                    ellipticCurve,
+                    new ECPoint(
+                            spec.getG().getAffineXCoord().toBigInteger(),
+                            spec.getG().getAffineYCoord().toBigInteger()),
+                            spec.getN(), spec.getH());
+
+        }
+        else
+>>>>>>> BRANCH (119751 bouncycastle: Android tree with upstream code for version 1.)
         {
             X962Parameters params = new X962Parameters((ASN1Primitive)info.getAlgorithmId().getParameters());
             ECCurve                 curve;
@@ -478,7 +530,7 @@ public class JCEECPublicKey
     public String toString()
     {
         StringBuffer    buf = new StringBuffer();
-        String          nl = System.getProperty("line.separator");
+        String          nl = Strings.lineSeparator();
 
         buf.append("EC Public Key").append(nl);
         buf.append("            X: ").append(this.q.getAffineXCoord().toBigInteger().toString(16)).append(nl);
