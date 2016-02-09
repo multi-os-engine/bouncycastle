@@ -1,11 +1,14 @@
 package org.bouncycastle.jcajce.provider.symmetric;
 
+import org.bouncycastle.asn1.misc.MiscObjectIdentifiers;
 import org.bouncycastle.crypto.CipherKeyGenerator;
 import org.bouncycastle.crypto.engines.BlowfishEngine;
+import org.bouncycastle.crypto.macs.CMac;
 import org.bouncycastle.crypto.modes.CBCBlockCipher;
 import org.bouncycastle.jcajce.provider.config.ConfigurableProvider;
 import org.bouncycastle.jcajce.provider.symmetric.util.BaseBlockCipher;
 import org.bouncycastle.jcajce.provider.symmetric.util.BaseKeyGenerator;
+import org.bouncycastle.jcajce.provider.symmetric.util.BaseMac;
 import org.bouncycastle.jcajce.provider.symmetric.util.IvAlgorithmParameters;
 import org.bouncycastle.jcajce.provider.util.AlgorithmProvider;
 
@@ -30,6 +33,15 @@ public final class Blowfish
         public CBC()
         {
             super(new CBCBlockCipher(new BlowfishEngine()), 64);
+        }
+    }
+
+    public static class CMAC
+        extends BaseMac
+    {
+        public CMAC()
+        {
+            super(new CMac(new BlowfishEngine()));
         }
     }
 
@@ -63,14 +75,19 @@ public final class Blowfish
         public void configure(ConfigurableProvider provider)
         {
 
+            provider.addAlgorithm("Mac.BLOWFISHCMAC", PREFIX + "$CMAC");
             provider.addAlgorithm("Cipher.BLOWFISH", PREFIX + "$ECB");
+<<<<<<< HEAD   (3e75bd Merge "Restoring the contents of aosp after")
             // BEGIN android-removed
             // provider.addAlgorithm("Cipher.1.3.6.1.4.1.3029.1.2", PREFIX + "$CBC");
             // END android-removed
+=======
+            provider.addAlgorithm("Cipher", MiscObjectIdentifiers.cryptlib_algorithm_blowfish_CBC, PREFIX + "$CBC");
+>>>>>>> BRANCH (119751 bouncycastle: Android tree with upstream code for version 1.)
             provider.addAlgorithm("KeyGenerator.BLOWFISH", PREFIX + "$KeyGen");
-            provider.addAlgorithm("Alg.Alias.KeyGenerator.1.3.6.1.4.1.3029.1.2", "BLOWFISH");
+            provider.addAlgorithm("Alg.Alias.KeyGenerator", MiscObjectIdentifiers.cryptlib_algorithm_blowfish_CBC, "BLOWFISH");
             provider.addAlgorithm("AlgorithmParameters.BLOWFISH", PREFIX + "$AlgParams");
-            provider.addAlgorithm("Alg.Alias.AlgorithmParameters.1.3.6.1.4.1.3029.1.2", "BLOWFISH");
+            provider.addAlgorithm("Alg.Alias.AlgorithmParameters", MiscObjectIdentifiers.cryptlib_algorithm_blowfish_CBC, "BLOWFISH");
 
         }
     }
