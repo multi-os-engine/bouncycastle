@@ -15,8 +15,14 @@
 #
 LOCAL_PATH := $(call my-dir)
 
+# All the files needed for OCSP testing
+all_bc_ocsp_files := $(call all-java-files-under,bcpkix/src/main/java/org/bouncycastle/cert/ocsp) \
+ $(call all-java-files-under,bcprov/src/main/java/org/bouncycastle/asn1/ocsp)
+
 # used for bouncycastle-hostdex where we want everything for testing
-all_bcprov_src_files := $(call all-java-files-under,bcprov/src/main/java)
+all_bcprov_src_files := $(filter-out \
+ $(all_bc_ocsp_files), \
+ $(call all-java-files-under,bcprov/src/main/java))
 
 # used for bouncycastle for target where we want to be sure to use OpenSSLDigest
 android_bcprov_src_files := $(filter-out \
@@ -28,6 +34,11 @@ ri_bcprov_src_files := $(filter-out \
  bcprov/src/main/java/org/bouncycastle/crypto/digests/AndroidDigestFactoryOpenSSL.java \
  bcprov/src/main/java/org/bouncycastle/crypto/digests/OpenSSLDigest.java, \
  $(all_bcprov_src_files))
+
+# used for host tools, but OCSP is only for testing
+all_bcpkix_src_files := $(filter-out \
+ $(all_bc_ocsp_files), \
+ $(call all-java-files-under,bcpkix/src/main/java))
 
 # These cannot build in the PDK, because the PDK requires all libraries
 # compile against SDK versions. LOCAL_NO_STANDARD_LIBRARIES conflicts with
@@ -60,7 +71,33 @@ ifneq ($(TARGET_BUILD_PDK),true)
     LOCAL_MODULE_TAGS := optional
     LOCAL_SDK_VERSION := 9
     LOCAL_SRC_FILES := $(ri_bcprov_src_files)
+    LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
+    include $(BUILD_STATIC_JAVA_LIBRARY)
+
+    # PKIX classes used for testing
+    include $(CLEAR_VARS)
+    LOCAL_MODULE := bouncycastle-bcpkix-nojarjar
     LOCAL_MODULE_TAGS := optional
+    LOCAL_SRC_FILES := $(all_bcpkix_src_files)
+    LOCAL_JAVA_LIBRARIES := bouncycastle-nojarjar
+    LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
+    include $(BUILD_STATIC_JAVA_LIBRARY)
+
+    include $(CLEAR_VARS)
+    LOCAL_MODULE := bouncycastle-bcpkix
+    LOCAL_MODULE_TAGS := optional
+    LOCAL_STATIC_JAVA_LIBRARIES := bouncycastle-bcpkix-nojarjar
+    LOCAL_JARJAR_RULES := $(LOCAL_PATH)/jarjar-rules.txt
+    LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
+    include $(BUILD_STATIC_JAVA_LIBRARY)
+
+    # OCSP classes used for testing
+    include $(CLEAR_VARS)
+    LOCAL_MODULE := bouncycastle-ocsp
+    LOCAL_MODULE_TAGS := optional
+    LOCAL_SRC_FILES := $(all_bc_ocsp_files)
+    LOCAL_JAVA_LIBRARIES := bouncycastle-nojarjar bouncycastle-bcpkix-nojarjar
+    LOCAL_JARJAR_RULES := $(LOCAL_PATH)/jarjar-rules.txt
     LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
     include $(BUILD_STATIC_JAVA_LIBRARY)
 endif # TARGET_BUILD_PDK != true
@@ -110,11 +147,46 @@ bouncycastle-proguard-deadcode: $(full_classes_compiled_jar) $(full_java_libs)
 ifneq ($(TARGET_BUILD_PDK),true)
   ifeq ($(HOST_OS),linux)
     include $(CLEAR_VARS)
-    LOCAL_MODULE := bouncycastle-hostdex
+    LOCAL_MODULE := bouncycastle-hostdex-nojarjar
     LOCAL_MODULE_TAGS := optional
     LOCAL_SRC_FILES := $(all_bcprov_src_files)
-    LOCAL_MODULE_TAGS := optional
     LOCAL_JAVA_LIBRARIES := conscrypt-hostdex
+    LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
+    include $(BUILD_HOST_DALVIK_JAVA_LIBRARY)
+
+    include $(CLEAR_VARS)
+    LOCAL_MODULE := bouncycastle-hostdex
+    LOCAL_MODULE_TAGS := optional
+    LOCAL_STATIC_JAVA_LIBRARIES := bouncycastle-hostdex-nojarjar
+    LOCAL_JAVA_LIBRARIES := conscrypt-hostdex
+    LOCAL_JARJAR_RULES := $(LOCAL_PATH)/jarjar-rules.txt
+    LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
+    include $(BUILD_HOST_DALVIK_JAVA_LIBRARY)
+
+    include $(CLEAR_VARS)
+    LOCAL_MODULE := bouncycastle-bcpkix-hostdex-nojarjar
+    LOCAL_MODULE_TAGS := optional
+    LOCAL_SRC_FILES := $(all_bcpkix_src_files)
+    LOCAL_JAVA_LIBRARIES := bouncycastle-hostdex-nojarjar
+    LOCAL_JARJAR_RULES := $(LOCAL_PATH)/jarjar-rules.txt
+    LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
+    include $(BUILD_HOST_DALVIK_JAVA_LIBRARY)
+
+    include $(CLEAR_VARS)
+    LOCAL_MODULE := bouncycastle-bcpkix-hostdex
+    LOCAL_MODULE_TAGS := optional
+    LOCAL_STATIC_JAVA_LIBRARIES := bouncycastle-bcpkix-hostdex-nojarjar
+    LOCAL_JAVA_LIBRARIES := bouncycastle-hostdex-nojarjar
+    LOCAL_JARJAR_RULES := $(LOCAL_PATH)/jarjar-rules.txt
+    LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
+    include $(BUILD_HOST_DALVIK_JAVA_LIBRARY)
+
+    # OCSP classes used for testing
+    include $(CLEAR_VARS)
+    LOCAL_MODULE := bouncycastle-ocsp-hostdex
+    LOCAL_MODULE_TAGS := optional
+    LOCAL_SRC_FILES := $(all_bc_ocsp_files)
+    LOCAL_JAVA_LIBRARIES := bouncycastle-hostdex-nojarjar bouncycastle-bcpkix-hostdex-nojarjar
     LOCAL_JARJAR_RULES := $(LOCAL_PATH)/jarjar-rules.txt
     LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
     include $(BUILD_HOST_DALVIK_JAVA_LIBRARY)
@@ -125,15 +197,29 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := bouncycastle-host
 LOCAL_MODULE_TAGS := optional
 LOCAL_SRC_FILES := $(ri_bcprov_src_files)
-LOCAL_MODULE_TAGS := optional
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 include $(BUILD_HOST_JAVA_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := bouncycastle-bcpkix-host
 LOCAL_MODULE_TAGS := optional
-LOCAL_SRC_FILES := $(call all-java-files-under,bcpkix/src/main/java)
-LOCAL_MODULE_TAGS := optional
+LOCAL_SRC_FILES := $(all_bcpkix_src_files)
 LOCAL_JAVA_LIBRARIES := bouncycastle-host
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 include $(BUILD_HOST_JAVA_LIBRARY)
+
+# OCSP classes used for testing
+include $(CLEAR_VARS)
+LOCAL_MODULE := bouncycastle-ocsp-host
+LOCAL_MODULE_TAGS := optional
+LOCAL_SRC_FILES := $(all_bc_ocsp_files)
+LOCAL_JAVA_LIBRARIES := bouncycastle-host bouncycastle-bcpkix-host
+LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
+include $(BUILD_HOST_JAVA_LIBRARY)
+
+# Unset these so they don't linger in the next makefile
+all_bcprov_src_files :=
+android_bcprov_src_files :=
+ri_bcprov_src_files :=
+all_bcpkix_src_files :=
+all_bc_ocsp_files :=
